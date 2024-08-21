@@ -467,7 +467,7 @@ def Figure_M8(data):
 def Figure_M9(data):
     Astrogeo_Skymapper,Skymapper_xmatches,max_tol_err,max_tol_Z_array,N_bins = data
     
-    Skymapper_OPTICAL_PA,Skymapper_OPTICAL_PA_ERR_ORIGINAL,Skymapper_VLBI_PA,Skymapper_VLBI_PA_ERR_ORIGINAL,Skymapper_PA_DIFF,Skymapper_PA_DIFF_ERR_ORIGINAL,Skymapper_SOURCE_Z,Skymapper_catalogue_Astrogeo_TYPE_matches,Skymapper_catalogue_Astrogeo_B_matches = data_loading_and_xmatching.get_Skymapper_data(Astrogeo_Skymapper,Skymapper_xmatches)
+    Skymapper_OPTICAL_PA,Skymapper_OPTICAL_PA_ERR_ORIGINAL,Skymapper_VLBI_PA,Skymapper_VLBI_PA_ERR_ORIGINAL,Skymapper_PA_DIFF,Skymapper_PA_DIFF_ERR_ORIGINAL,Skymapper_SOURCE_Z,Skymapper_Astrogeo_TYPE_matches,Skymapper_Astrogeo_B_matches = data_loading_and_xmatching.get_Skymapper_data(Astrogeo_Skymapper,Skymapper_xmatches)
     
     b_filter = 2.
     stellar_index_filter = 0.5
