@@ -17,19 +17,41 @@ def get_Astrogeo_good_catalogue(Astrogeo_catalogue):
     return Astrogeo_good
     
 
-def load_catalogues():
-    print('Loading DESI...')
-    DESI_catalogue = pd.read_csv('VLBI_source_matches_dr9-10_combi_complete.csv',header=0)
-    print('Loading SDSS...')
-    SDSS_catalogue = pd.read_csv('SDSS_DR17_Gal_QSO_jasorey_complete.csv',header=0)
-    print('Loading DES...')
-    DES_catalogue = pd.read_csv('DES_full_catalogue_Astrogeo.csv',header=0)
-    print('Loading Skymapper...')
-    Skymapper_catalogue = pd.read_csv('skymapper.csv',header=0)
-    print('Loading KIDS...')
-    with fits.open('KiDS_DR4.1_ugriZYJHKs_SOM_gold_WL_cat.fits',memmap=True) as KIDS_fits:
-        KIDS_catalogue = KIDS_fits[1].data
-    return DESI_catalogue,SDSS_catalogue,DES_catalogue,Skymapper_catalogue,KIDS_catalogue
+def load_catalogues(catalogue):
+    if catalogue == 'DESI':
+        print('Loading DESI...')
+        DESI_catalogue = pd.read_csv('VLBI_source_matches_dr9-10_combi_complete.csv',header=0)
+        return DESI_catalogue
+    if catalogue == 'SDSS':
+        print('Loading SDSS...')
+        SDSS_catalogue = pd.read_csv('SDSS_DR17_Gal_QSO_jasorey_complete.csv',header=0)
+        return SDSS_catalogue
+    if catalogue == 'DES':
+        print('Loading DES...')
+        DES_catalogue = pd.read_csv('DES_full_catalogue_Astrogeo.csv',header=0)
+        return DES_catalogue
+    if catalogue == 'Skymapper':
+        print('Loading Skymapper...')
+        Skymapper_catalogue = pd.read_csv('skymapper.csv',header=0)
+        return Skymapper_catalogue
+    if catalogue == 'KIDS':
+        print('Loading KIDS...')
+        with fits.open('KiDS_DR4.1_ugriZYJHKs_SOM_gold_WL_cat.fits',memmap=True) as KIDS_fits:
+            KIDS_catalogue = KIDS_fits[1].data
+        return KIDS_catalogue
+    if catalogue == 'All':
+        print('Loading DESI...')
+        DESI_catalogue = pd.read_csv('VLBI_source_matches_dr9-10_combi_complete.csv',header=0)
+        print('Loading SDSS...')
+        SDSS_catalogue = pd.read_csv('SDSS_DR17_Gal_QSO_jasorey_complete.csv',header=0)
+        print('Loading DES...')
+        DES_catalogue = pd.read_csv('DES_full_catalogue_Astrogeo.csv',header=0)
+        print('Loading Skymapper...')
+        Skymapper_catalogue = pd.read_csv('skymapper.csv',header=0)
+        print('Loading KIDS...')
+        with fits.open('KiDS_DR4.1_ugriZYJHKs_SOM_gold_WL_cat.fits',memmap=True) as KIDS_fits:
+            KIDS_catalogue = KIDS_fits[1].data
+        return DESI_catalogue,SDSS_catalogue,DES_catalogue,Skymapper_catalogue,KIDS_catalogue
 
 def load_sampled_catalogues(size,SDSS_catalogue,KIDS_catalogue):
     print('Loading sample of SDSS...')

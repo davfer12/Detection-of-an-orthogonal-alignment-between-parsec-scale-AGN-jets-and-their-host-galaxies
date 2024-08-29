@@ -630,11 +630,17 @@ def Histograms_plots(data_array,data_err_array,max_tol_Z_array,Survey_Name,Png_N
             axes[i,j].hist(data_array[i,j],bins=Bins_array_fig,histtype = 'step', fill = True, color = 'dodgerblue', edgecolor='dodgerblue', linewidth=3, alpha = 0.7)
             axes[i,j].hist(data_array[i,j],bins=bin_2_Bins_array_fig,histtype = 'step', fill = True, color = 'lightcoral', edgecolor='lightcoral', linewidth=3, alpha=0.5)
             
-            axes[i,j].errorbar(Bins_centers_fig,Original_counts_fig,yerr=Y_errs_fig,xerr=None,fmt='None',ecolor='k',elinewidth=2)
-            axes[i,j].errorbar(bin_2_Bins_centers_fig,bin_2_Original_counts_fig,yerr=bin_2_Y_errs_fig,xerr=None,fmt='None',ecolor='k',elinewidth=2)
+            if (i == n_rows - 1) & (j == 2):
+                axes[i,j].errorbar(Bins_centers_fig,Original_counts_fig,yerr=Y_errs_fig,xerr=None,fmt='None', capsize=5, ecolor='k',elinewidth=2, label='Counts +/- SD of bin height')
+            else:
+                axes[i,j].errorbar(Bins_centers_fig,Original_counts_fig,yerr=Y_errs_fig,xerr=None,fmt='None', capsize=5, ecolor='k',elinewidth=2)
+            axes[i,j].errorbar(bin_2_Bins_centers_fig,bin_2_Original_counts_fig,yerr=bin_2_Y_errs_fig,xerr=None,fmt='None', capsize=5, ecolor='k',elinewidth=2)
     
             axes[i,j].fill_between(fill_x,fill_y-fill_err,fill_y+fill_err, alpha=0.8,color='midnightblue',step='post')
-            axes[i,j].fill_between(bin_2_fill_x,bin_2_fill_y-bin_2_fill_err,bin_2_fill_y+bin_2_fill_err, alpha=0.5,color='darkred',step='post')
+            if (i == n_rows - 1) & (j == 2):
+                axes[i,j].fill_between(bin_2_fill_x,bin_2_fill_y-bin_2_fill_err,bin_2_fill_y+bin_2_fill_err, alpha=0.5,color='darkred',step='post', label='Mean +/- SD of null signal')
+            else:
+                axes[i,j].fill_between(bin_2_fill_x,bin_2_fill_y-bin_2_fill_err,bin_2_fill_y+bin_2_fill_err, alpha=0.5,color='darkred',step='post')
             axes[i,j].text(0.5,label_seps[i,j], labels[i,j], size=25, ha="center", 
          transform=axes[i,j].transAxes)
             
@@ -663,7 +669,7 @@ def Histograms_plots(data_array,data_err_array,max_tol_Z_array,Survey_Name,Png_N
             percentage += 1./(n_rows*3)
             print('{:.0f}'.format(100*percentage)+'%', end='\r') 
     p_values_blue_2_bins = np.zeros((4,3))
-
+    fig.legend(bbox_to_anchor=(0.85, 1.0), frameon=False, borderaxespad=0., labelspacing=1.5,  bbox_transform=fig.transFigure, fontsize=25)
     fig.suptitle(Survey_Name,fontsize=50)
     plt.subplots_adjust(top=0.9)
     plt.savefig('Paper_images/'+Png_Name,dpi=100,bbox_inches = 'tight',

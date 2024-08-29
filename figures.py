@@ -62,7 +62,7 @@ def Figure_2(data):
     plt.scatter(DES_RA,DES_DEC,c='darkorange',s=17,marker='s',alpha=0.5,label='DES')
     plt.scatter(KIDS_RA,KIDS_DEC,c='maroon',s=17,marker='s',alpha=0.5,label='KiDS')
     plt.scatter(Astrogeo_RA_good,Astrogeo_DEC_good,c='cyan',s=0.5,marker='.',alpha=1,label='VLBI')
-    lgnd = plt.legend(bbox_to_anchor=(0.85,1.3),ncol=3)
+    lgnd = plt.legend(bbox_to_anchor=(0.85,1.3),ncol=3, frameon=False)
     for lh in lgnd.legendHandles:
         lh._sizes = [30]  
         lh.set_alpha(1)   
@@ -128,11 +128,11 @@ def Figure_4(data):
     bins_array = np.linspace(0,90,n_bins+1)
     bins_center = 0.5*(bins_array[1:] + bins_array[:-1])
     counts,bins = np.histogram(delta_PA, bins=bins_array)
-
+    
     ax1.hist(delta_PA, bins=bins_array)
     ax1.set_xlabel(r'$\Delta$PA')
     ax1.text(0.5,-0.2, "(a)", size=12, ha="center", transform=ax1.transAxes)
-    ax1.set_title(r'Eagle simulation elliptical galaxies with no scatter')   
+    ax1.set_title(r'Eagle simulation elliptical galaxies with no scatter')
     print('Computing with uniform spin orientations...')
 
     delta_PAs = []
@@ -173,11 +173,12 @@ def Figure_4(data):
 
 
     ax2.bar(bins_array[:-1], counts_avg, bins_array[1] - bins_array[0], align='edge')
-    ax2.errorbar(bins_center, counts_avg, yerr=counts_std, fmt='None', ecolor='k')
+    ax2.errorbar(bins_center, counts_avg, yerr=counts_std, fmt='None', capsize=5, ecolor='k')
     ax2.set_xlabel(r'$\Delta$PA')
     ax2.text(0.5,-0.2, "(b)", size=12, ha="center", transform=ax2.transAxes)
-    ax2.set_title(r'Eagle simulation elliptical galaxies with uniform spin orientations')   
-
+    ax2.set_title(r'Eagle simulation elliptical galaxies with uniform spin orientations')
+    ax2.set_ylim([0,225])
+    
 
 
 
@@ -219,10 +220,13 @@ def Figure_4(data):
 
 
     ax3.bar(bins_array[:-1], counts_avg, bins_array[1] - bins_array[0], align='edge')
-    ax3.errorbar(bins_center, counts_avg, yerr=counts_std, fmt='None', ecolor='k')
+    ax3.errorbar(bins_center, counts_avg, yerr=counts_std, fmt='None', capsize=5, ecolor='k')
     ax3.set_xlabel(r'$\Delta$PA')
     ax3.text(0.5,-0.2, "(c)", size=12, ha="center", transform=ax3.transAxes)
     ax3.set_title(r'Eagle simulation elliptical galaxies with gaussian scatter with $\epsilon$ = {}'.format(epsilon))
+    
+ 
+    
 
 
 
@@ -264,12 +268,14 @@ def Figure_4(data):
 
 
     ax4.bar(bins_array[:-1], counts_avg, bins_array[1] - bins_array[0], align='edge')
-    ax4.errorbar(bins_center, counts_avg, yerr=counts_std, fmt='None', ecolor='k')
+    ax4.errorbar(bins_center, counts_avg, yerr=counts_std, fmt='None', capsize=5, ecolor='k', label='Counts +/- SD of bin height')
     ax4.set_xlabel(r'$\Delta$PA')
     ax4.text(0.5,-0.2, "(d)", size=12, ha="center", transform=ax4.transAxes)
     ax4.set_title(r'Eagle simulation elliptical galaxies with uniform scatter with $\epsilon$ = {}'.format(epsilon))
 
-
+    
+    fig.legend(bbox_to_anchor=(0.9, 1.0), frameon=False, borderaxespad=0., fontsize=15, bbox_transform=fig.transFigure)
+    
     plt.subplots_adjust(hspace=0.4)
     plt.savefig('Paper_images/Eagle_sim_random_ellipticals.png',dpi=100, bbox_inches='tight')
     plt.show()
@@ -339,10 +345,155 @@ def Figure_M3(data):
     mag_cut = DESI_catalogue_Astrogeo_MAG_Z_matches < max_mag_tol
     b_cut = DESI_catalogue_Astrogeo_B_matches > 1.3
     final_p_values_5_bins,final_p_values_2_bins = main_functions.Histograms(DESI_VLBI_PA[b_cut & mag_cut],DESI_VLBI_PA_ERR_ORIGINAL[b_cut & mag_cut],DESI_OPTICAL_PA[b_cut & mag_cut],DESI_OPTICAL_PA_ERR_ORIGINAL[b_cut & mag_cut],DESI_PA_DIFF[b_cut & mag_cut],DESI_PA_DIFF_ERR_ORIGINAL[b_cut & mag_cut],DESI_SOURCE_Z[b_cut & mag_cut],max_tol_err,max_tol_Z_array,Survey_Name,Png_Name,N_bins,False,good_cases_cut=DESI_good_cases_cut[b_cut & mag_cut])
-                                                                                   
-
-
+               
+        
 def Figure_M4(data):
+
+    Astrogeo_DESI,DESI_xmatches,z_bound = data
+    N_shuffles = 1000
+    folded = True
+
+    DESI_OPTICAL_PA,DESI_OPTICAL_PA_ERR_ORIGINAL,DESI_VLBI_PA,DESI_VLBI_PA_ERR_ORIGINAL,DESI_PA_DIFF,DESI_PA_DIFF_ERR_ORIGINAL,DESI_SOURCE_Z,DESI_catalogue_Astrogeo_B_matches,DESI_catalogue_Astrogeo_TYPE_matches,DESI_catalogue_Astrogeo_MAG_Z_matches = data_loading_and_xmatching.get_DESI_data(Astrogeo_DESI,DESI_xmatches)
+    
+    DESI_good_cases_cut = np.in1d(DESI_catalogue_Astrogeo_TYPE_matches,['SER','EXP','DEV'])
+    b_cut = DESI_catalogue_Astrogeo_B_matches > 1.3
+    err_cut = DESI_OPTICAL_PA_ERR_ORIGINAL < 360
+    z_cut = DESI_SOURCE_Z < z_bound
+
+    fig,axes = plt.subplots(2,2, figsize=(10,10))
+
+
+
+    x_original = DESI_VLBI_PA[b_cut & err_cut]
+    y_original = aux_functions.angle_conversion_major_PA(90 + DESI_OPTICAL_PA[b_cut & err_cut])
+    x_err = DESI_VLBI_PA_ERR_ORIGINAL[b_cut & err_cut]
+    y_err = DESI_OPTICAL_PA_ERR_ORIGINAL[b_cut & err_cut]
+
+
+
+    x_mod,y_mod = aux_functions.mod(x_original,y_original,folded)
+
+
+    ax1 = plt.subplot(221)
+    ax1.set_xlim([-180,180])
+    ax1.set_ylim([-270,270])
+    ax1.scatter(x_mod,y_mod,c='b',s=0.1)
+    ax1.errorbar(x_mod,y_mod,xerr=x_err,yerr=y_err,fmt='None',ecolor='k',elinewidth=0.5)
+    ax1.axvline(x=0,color='k',lw=0.5)
+    ax1.axhline(y=0,color='k',lw=0.5)
+    ax1.plot([-270,270],[-270,270],'k--',lw=2)
+    ax1.set_aspect(1)
+    ax1.set_facecolor('white')
+    ax1.set_xlabel('Jet PA')
+    ax1.set_ylabel('Closest Optical minor axis PA')
+    ax1.set_title('All cases')
+
+
+
+    ax2 = plt.subplot(222)
+    ax2.hist(np.abs(y_mod - x_mod), bins=np.linspace(0,90,6))
+    ax2.set_xlabel('y-x (deg)')
+    ax2.yaxis.tick_right()
+    ax2.yaxis.set_label_position("right")
+    ax2.set_title('All cases'.format(z_bound))
+
+
+
+
+    x_original = DESI_VLBI_PA[DESI_good_cases_cut & z_cut & b_cut]
+    y_original = aux_functions.angle_conversion_major_PA(90 + DESI_OPTICAL_PA[DESI_good_cases_cut & z_cut & b_cut])
+    x_err = DESI_VLBI_PA_ERR_ORIGINAL[DESI_good_cases_cut & z_cut & b_cut]
+    y_err = DESI_OPTICAL_PA_ERR_ORIGINAL[DESI_good_cases_cut & z_cut & b_cut ]
+
+    x_mod,y_mod = aux_functions.mod(x_original,y_original,folded)
+
+
+    ax3 = plt.subplot(223,sharex=ax1)
+    ax3.set_xlim([-180,180])
+    ax3.set_ylim([-270,270])
+    ax3.scatter(x_mod,y_mod,c='b',s=1)
+    ax3.errorbar(x_mod,y_mod,xerr=x_err,yerr=y_err,fmt='None',ecolor='k',elinewidth=0.5)
+    ax3.axvline(x=0,color='k',lw=0.5)
+    ax3.axhline(y=0,color='k',lw=0.5)
+    ax3.plot([-270,270],[-270,270],'k--',lw=2)
+    ax3.set_aspect(1)
+    ax3.set_facecolor('white')
+    ax3.set_xlabel('Jet PA')
+    ax3.set_ylabel('Closest Optical minor axis PA')
+    ax3.set_title('Good cases, z < {}'.format(z_bound))
+
+
+
+    ax4 = plt.subplot(224)
+    ax4.hist(np.abs(y_mod - x_mod), bins=np.linspace(0,90,6))
+    ax4.set_xlabel('y-x (deg)')
+    ax4.yaxis.tick_right()
+    ax4.yaxis.set_label_position("right")
+    ax4.set_title('Good cases, z < {}'.format(z_bound))
+
+
+
+
+    plt.subplots_adjust(wspace=0.1, hspace=0.2)
+    fig.suptitle('DESI')
+    plt.savefig('Paper_images/DESI_scatterplot_delta_jet.png',dpi=100,bbox_inches='tight')
+    plt.show()
+        
+
+def Figure_M5(data):
+    Astrogeo_DESI,DESI_xmatches,z_bound = data
+    
+    DESI_OPTICAL_PA,DESI_OPTICAL_PA_ERR_ORIGINAL,DESI_VLBI_PA,DESI_VLBI_PA_ERR_ORIGINAL,DESI_PA_DIFF,DESI_PA_DIFF_ERR_ORIGINAL,DESI_SOURCE_Z,DESI_catalogue_Astrogeo_B_matches,DESI_catalogue_Astrogeo_TYPE_matches,DESI_catalogue_Astrogeo_MAG_Z_matches = data_loading_and_xmatching.get_DESI_data(Astrogeo_DESI,DESI_xmatches)
+    
+    DESI_good_cases_cut = np.in1d(DESI_catalogue_Astrogeo_TYPE_matches,['SER','EXP','DEV'])
+    b_cut = DESI_catalogue_Astrogeo_B_matches > 1.3
+    z_cut = DESI_SOURCE_Z < z_bound
+    
+    y = DESI_VLBI_PA[DESI_good_cases_cut & b_cut & z_cut]
+    x = aux_functions.angle_conversion_major_PA(DESI_PA_DIFF[DESI_good_cases_cut & b_cut & z_cut])
+
+    x_err = DESI_VLBI_PA_ERR_ORIGINAL[DESI_good_cases_cut & b_cut & z_cut]
+    y_err = DESI_PA_DIFF_ERR_ORIGINAL[DESI_good_cases_cut & b_cut & z_cut]
+
+
+    r = np.corrcoef(x, y)
+
+    rho = r[0,1]
+
+
+    fig,(ax1,ax2) = plt.subplots(2,1, figsize=(10,10), sharex=True, layout='constrained')
+
+
+    counts,bins,_ = ax1.hist(x, bins=np.linspace(0,90,6), histtype='step', fill = True, color = 'lightcoral', edgecolor='lightcoral', linewidth=3, alpha=0.5)
+    for tk in ax1.get_xticklabels():
+            tk.set_visible(False)
+    ax1.set_xlim([0,1.2*np.max(counts)])
+    ax1.set_ylabel('Counts per bin')
+
+
+    ax2.scatter(x,y,c='b',s=3)
+    _,_,_,im = ax2.hist2d(x,y,bins=[np.linspace(0,90,6),np.linspace(-180,180,2)],cmap='Blues',vmin=0)
+    ax2.errorbar(x,y,xerr=x_err,yerr=y_err,fmt='None',ecolor='k',elinewidth=0.5)
+    ax2.axvline(x=0,color='k',lw=0.5)
+    ax2.axhline(y=0,color='k',lw=0.5)
+    ax2.set_ylabel('Counts per bin')
+    for tk in ax2.get_xticklabels():
+        tk.set_visible(True)
+
+    for tk in ax2.get_yticklabels():
+        tk.set_visible(True)
+    ax2.set_xlim([0,90])
+    ax2.set_ylim([-180,180])
+    fig.colorbar(im, ax=ax2, orientation='vertical',label='Counts per bin')     #, cax=cax, orientation='vertical')
+    ax2.set_ylabel('Jet PA')
+    ax2.set_xlabel(r'$\Delta$PA')
+    fig.suptitle(r'DESI good cases, z < {}'.format(z_bound))
+    plt.savefig('Paper_images/DESI_scatterplot_delta_jet.png',dpi=100,bbox_inches='tight')
+    plt.show()
+    
+            
+
+def Figure_M6(data):
     Astrogeo_DESI,DESI_xmatches,max_tol_err,max_tol_Z_array,N_bins = data 
     
     DESI_OPTICAL_PA,DESI_OPTICAL_PA_ERR_ORIGINAL,DESI_VLBI_PA,DESI_VLBI_PA_ERR_ORIGINAL,DESI_PA_DIFF,DESI_PA_DIFF_ERR_ORIGINAL,DESI_SOURCE_Z,DESI_catalogue_Astrogeo_B_matches,DESI_catalogue_Astrogeo_TYPE_matches,DESI_catalogue_Astrogeo_MAG_Z_matches = data_loading_and_xmatching.get_DESI_data(Astrogeo_DESI,DESI_xmatches)
@@ -357,7 +508,7 @@ def Figure_M4(data):
     
 
 
-def Figure_M5(data):
+def Figure_M7(data):
     Astrogeo_DESI,DESI_xmatches,z_tol = data
     DESI_SOURCE_Z = np.array(Astrogeo_DESI.Z)
     DESI_catalogue_Astrogeo_TYPE_matches = np.array(DESI_xmatches.TYPE)
@@ -366,10 +517,9 @@ def Figure_M5(data):
     DESI_catalogue_Astrogeo_THETA_J2000_matches = np.array(DESI_xmatches.pos_angle)
     Astrogeo_DESI_catalogue_JET_PA_matches_good = np.array(Astrogeo_DESI.pa)
     DESI_PA_DIFF = aux_functions.PA_difference(DESI_catalogue_Astrogeo_THETA_J2000_matches,Astrogeo_DESI_catalogue_JET_PA_matches_good)
-    b_cut = DESI_catalogue_Astrogeo_B_matches > 1.3
     z_cut = DESI_SOURCE_Z < z_tol
-    x = DESI_SOURCE_Z[DESI_good_cases_cut & (np.isnan(DESI_SOURCE_Z) == False) & z_cut & b_cut]
-    y = DESI_PA_DIFF[DESI_good_cases_cut & (np.isnan(DESI_SOURCE_Z) == False) & z_cut & b_cut]
+    x = DESI_SOURCE_Z[DESI_good_cases_cut & (np.isnan(DESI_SOURCE_Z) == False) & z_cut]
+    y = DESI_PA_DIFF[DESI_good_cases_cut & (np.isnan(DESI_SOURCE_Z) == False) & z_cut]
 
     n = 10
     n_bins = np.linspace(0,1,n+1)
@@ -411,19 +561,19 @@ def Figure_M5(data):
     ax1.set_xlabel('z bin centers')
     ax2 = ax1.twinx()
     ax2 = plt.gca()
-    plt.errorbar(bin_centers,median_bins,yerr=yerrors,xerr=None,fmt='None',elinewidth=1,capsize=3,ecolor='k',alpha=0.5)
+    plt.errorbar(bin_centers,median_bins,yerr=yerrors,xerr=None,fmt='None',elinewidth=1,capsize=3,ecolor='k',alpha=0.5, label='68% confidence interval')
     ax2.scatter(bin_centers,mean_bins,s=7,c='b',label='mean')
     ax2.scatter(bin_centers,median_bins,s=7,c='r',label='median')
     ax2.set_ylim([0,90])
     ax2.axhline(y=45,ls='--',color='k',alpha=0.5)
     ax2.set_ylabel(r'$\Delta$PA ($^{{\circ}}$)')
-    plt.legend()
-    plt.title('DESI b > 1.3", good cases, z < {}'.format(z_tol))
+    plt.legend(frameon=False, bbox_to_anchor=(0.9,0.98), ncols= 3, fontsize=8)
+    plt.title('DESI good cases, z < {}'.format(z_tol))
     plt.savefig('Paper_images/DESI_Final_median_delta_redshift.png',dpi=100)
     plt.show()
     
 
-def Figure_M6(data):
+def Figure_M8(data):
     Surveys_Data,Surveys_Good_Data,max_tol_err,max_tol_Z_array,N_bins = data   
     Combined_VLBI_PA,Combined_VLBI_PA_ERR_ORIGINAL,Combined_Good_VLBI_PA,Combined_Good_VLBI_PA_ERR_ORIGINAL,Combined_OPTICAL_PA,Combined_OPTICAL_PA_ERR_ORIGINAL,Combined_Good_OPTICAL_PA,Combined_Good_OPTICAL_PA_ERR_ORIGINAL,Combined_PA_DIFF,Combined_PA_DIFF_ERR_ORIGINAL,Combined_Good_PA_DIFF,Combined_Good_PA_DIFF_ERR_ORIGINAL,Combined_SOURCE_Z,Combined_Good_SOURCE_Z = data_loading_and_xmatching.get_Combined_data(Surveys_Data,Surveys_Good_Data)
     
@@ -434,7 +584,7 @@ def Figure_M6(data):
     
         
     
-def Figure_M7(data):
+def Figure_M9(data):
     Astrogeo_SDSS,SDSS_xmatches,max_tol_err,max_tol_Z_array,N_bins = data
     
     SDSS_OPTICAL_PA,SDSS_OPTICAL_PA_ERR_ORIGINAL,SDSS_VLBI_PA,SDSS_VLBI_PA_ERR_ORIGINAL,SDSS_PA_DIFF,SDSS_PA_DIFF_ERR_ORIGINAL,SDSS_SOURCE_Z,SDSS_catalogue_Astrogeo_TYPE_matches,SDSS_catalogue_Astrogeo_B_matches = data_loading_and_xmatching.get_SDSS_data(Astrogeo_SDSS,SDSS_xmatches)
@@ -450,7 +600,7 @@ def Figure_M7(data):
     
 
 
-def Figure_M8(data):
+def Figure_M10(data):
     Astrogeo_DES,DES_xmatches,max_tol_err,max_tol_Z_array,N_bins = data
     DES_OPTICAL_PA,DES_OPTICAL_PA_ERR_ORIGINAL,DES_VLBI_PA,DES_VLBI_PA_ERR_ORIGINAL,DES_PA_DIFF,DES_PA_DIFF_ERR_ORIGINAL,DES_SOURCE_Z,DES_catalogue_Astrogeo_EXTENDED_CLASS_COADD_matches,DES_catalogue_Astrogeo_B_matches = data_loading_and_xmatching.get_DES_data(Astrogeo_DES,DES_xmatches)
     
@@ -464,7 +614,7 @@ def Figure_M8(data):
     
     
     
-def Figure_M9(data):
+def Figure_M11(data):
     Astrogeo_Skymapper,Skymapper_xmatches,max_tol_err,max_tol_Z_array,N_bins = data
     
     Skymapper_OPTICAL_PA,Skymapper_OPTICAL_PA_ERR_ORIGINAL,Skymapper_VLBI_PA,Skymapper_VLBI_PA_ERR_ORIGINAL,Skymapper_PA_DIFF,Skymapper_PA_DIFF_ERR_ORIGINAL,Skymapper_SOURCE_Z,Skymapper_Astrogeo_TYPE_matches,Skymapper_Astrogeo_B_matches = data_loading_and_xmatching.get_Skymapper_data(Astrogeo_Skymapper,Skymapper_xmatches)

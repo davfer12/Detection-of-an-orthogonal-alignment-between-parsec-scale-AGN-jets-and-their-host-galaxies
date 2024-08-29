@@ -29,15 +29,25 @@ def angle_conversion(angle):
 
 
 
-
-
 def angle_conversion_major_PA(angle):
     if not isinstance(angle,np.ndarray):
         angle = np.array([angle])
     angle_converted = np.fmod(angle+360*100,180)
     angle_converted[angle_converted > 90] = angle_converted[angle_converted > 90] - 180
     return angle_converted
-    
+  
+def mod(x_original,y_original,folded):
+    dPA = y_original-x_original
+    ii = dPA > 90
+    jj = dPA < -90
+    kk = dPA < 0
+    x_mod = x_original.copy()
+    y_mod = y_original.copy()
+    y_mod[ii] -= 180
+    y_mod[jj] += 180
+    if folded:
+        y_mod = x_mod + np.abs(y_mod-x_mod)
+    return x_mod,y_mod
     
 def MonteCarlo(angles,angles_err,N_draws,N_bins,N_bins_2):
     

@@ -7,6 +7,7 @@ pd.set_option('display.max_rows', 500)
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import cm
 import matplotlib.colors as mcolors
+import matplotlib.lines as mlines
 from astropy.io import fits
 from astropy.table import Table
 from astroquery.sdss import SDSS
