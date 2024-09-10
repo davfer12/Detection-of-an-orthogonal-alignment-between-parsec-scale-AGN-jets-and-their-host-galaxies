@@ -14,9 +14,9 @@ The 'main_functions.py' file contains the root of the data handlin and ganalysis
 
 The 'figures.py' file contains functions that generate every figure of the paper.
 
-The 'pregenerate_neccesary_data' script deals with taking the original optical catalogue data and performing a cross-match with the VLBI data, as well as taking a random sample from two of the catalogues which are used in the coverage map of Figure 2. We include this code here for transparency purposes, but the original optical catalogue data is too heavy to upload. We only upload the cross-matched outputs generated from this script in the data files. 
+The 'pregenerate_neccesary_data.py' script deals with taking the original optical catalogue data and performing a cross-match with the VLBI data, as well as taking a random sample from two of the catalogues which are used in the coverage map of Figure 2. We include this code here for transparency purposes, but the original optical catalogue data is too heavy to upload. We only upload the cross-matched outputs generated from this script in the data files. 
 
-The 'main' script uses all other files to load the catalogues and cross-matches and execute every function to generate all the Figures.
+The 'main.py' script uses all other files to load the catalogues and cross-matches and execute every function to generate all the Figures.
 
 The 'data' folder includes the following files:
 - Astrogeo_catalogue.csv: The whole VLBI Astrogeo data.
