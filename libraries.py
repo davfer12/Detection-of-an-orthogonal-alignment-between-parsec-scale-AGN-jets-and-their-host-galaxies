@@ -21,7 +21,6 @@ import warnings
 warnings.filterwarnings("ignore")
 from pylab import figure, cm
 from matplotlib.colors import LogNorm
-from astropy.coordinates import Angle
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from scipy.stats import kstest
 from scipy.stats import binned_statistic

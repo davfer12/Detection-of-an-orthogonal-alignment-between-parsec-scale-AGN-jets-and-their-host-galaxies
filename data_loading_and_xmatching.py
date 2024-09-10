@@ -2,197 +2,285 @@ from libraries import *
 import aux_functions
 
 def load_Astrogeo_catalogue():
+    """
+    Loads the Astrogeo catalogue from a CSV file.
+
+    This function reads a CSV file called 'Source_coords_csv.csv' which contains 
+    the Astrogeo catalogue and loads it into a pandas DataFrame.
+
+    Returns:
+        pd.DataFrame: A pandas DataFrame containing the data from the Astrogeo catalogue.
+    """
+    # Print a message indicating the loading process has started
     print('Loading Astrogeo...')
-    Astrogeo_catalogue = pd.read_csv('Source_coords_csv.csv')
+    
+    # Load the CSV file into a pandas DataFrame
+    Astrogeo_catalogue = pd.read_csv('data/Astrogeo_catalogue.csv')
+    
+    # Return the loaded DataFrame
     return Astrogeo_catalogue
 
 def get_Astrogeo_good_catalogue(Astrogeo_catalogue):
+    """
+    Filters the Astrogeo catalogue to return only entries with valid RA and DEC values.
+
+    This function checks the Right Ascension (RA) and Declination (DEC) values in the 
+    Astrogeo catalogue and filters out rows with invalid or NaN values. The valid 
+    range for RA is between 0 and 360 degrees, and for DEC it is between -90 and 90 degrees.
+
+    Args:
+        Astrogeo_catalogue (pd.DataFrame): The full Astrogeo catalogue loaded from a CSV file.
+
+    Returns:
+        pd.DataFrame: A pandas DataFrame containing only the entries with valid RA and DEC values.
+    """
+    # Convert the RA and DEC columns to numpy arrays for easier filtering
     Astrogeo_RA = np.array(Astrogeo_catalogue.RA_deg)
     Astrogeo_DEC = np.array(Astrogeo_catalogue.DEC_deg)
+    
+    # Identify bad RA values: values outside the 0-360 range or NaN values
     RA_bad = (((Astrogeo_RA > 0) & (Astrogeo_RA < 360)) == False) & (np.isnan(Astrogeo_RA) == True)
+    
+    # Identify bad DEC values: values outside the -90 to 90 range or NaN values
     DEC_bad = (((Astrogeo_DEC > (-90)) & (Astrogeo_DEC < 90)) == False) & (np.isnan(Astrogeo_DEC) == True)
+    
+    # Identify good RA values: values within the 0-360 range and not NaN
     RA_good = (((Astrogeo_RA > 0) & (Astrogeo_RA < 360)) == True) & (np.isnan(Astrogeo_RA) == False)
+    
+    # Identify good DEC values: values within the -90 to 90 range and not NaN
     DEC_good = (((Astrogeo_DEC > (-90)) & (Astrogeo_DEC < 90)) == True) & (np.isnan(Astrogeo_DEC) == False)
+    
+    # Filter the catalogue to include only rows where both RA and DEC are good
     Astrogeo_good = Astrogeo_catalogue[RA_good & DEC_good]
+    
+    # Return the filtered catalogue
     return Astrogeo_good
+
     
 
 def load_catalogues(catalogue):
+    """
+    Loads the specified astronomical catalogue based on the input parameter.
+
+    Depending on the catalogue name provided, this function loads the corresponding 
+    CSV or FITS file into memory. If 'All' is provided as the catalogue name, it 
+    will load multiple catalogues simultaneously and return them as a tuple.
+
+    Args:
+        catalogue (str): The name of the catalogue to load. Possible values are:
+                         'DESI', 'SDSS', 'DES', 'Skymapper', 'KIDS', or 'All'.
+
+    Returns:
+        pd.DataFrame or tuple: A pandas DataFrame for the specific catalogue, or a tuple 
+        of DataFrames and FITS data if 'All' is selected.
+    """
     if catalogue == 'DESI':
+        # Loading the DESI catalogue from a CSV file
         print('Loading DESI...')
-        DESI_catalogue = pd.read_csv('VLBI_source_matches_dr9-10_combi_complete.csv',header=0)
+        DESI_catalogue = pd.read_csv('data/DESI_catalogue.csv', header=0)
         return DESI_catalogue
+    
     if catalogue == 'SDSS':
+        # Loading the SDSS catalogue from a CSV file
         print('Loading SDSS...')
-        SDSS_catalogue = pd.read_csv('SDSS_DR17_Gal_QSO_jasorey_complete.csv',header=0)
+        SDSS_catalogue = pd.read_csv('data/SDSS_catalogue.csv', header=0)
         return SDSS_catalogue
+    
     if catalogue == 'DES':
+        # Loading the DES catalogue from a CSV file
         print('Loading DES...')
-        DES_catalogue = pd.read_csv('DES_full_catalogue_Astrogeo.csv',header=0)
+        DES_catalogue = pd.read_csv('data/DES_full_catalogue_Astrogeo.csv', header=0)
         return DES_catalogue
+    
     if catalogue == 'Skymapper':
+        # Loading the Skymapper catalogue from a CSV file
         print('Loading Skymapper...')
-        Skymapper_catalogue = pd.read_csv('skymapper.csv',header=0)
+        Skymapper_catalogue = pd.read_csv('data/Skymapper_catalogue.csv', header=0)
         return Skymapper_catalogue
+    
     if catalogue == 'KIDS':
+        # Loading the KIDS catalogue from a FITS file
         print('Loading KIDS...')
-        with fits.open('KiDS_DR4.1_ugriZYJHKs_SOM_gold_WL_cat.fits',memmap=True) as KIDS_fits:
-            KIDS_catalogue = KIDS_fits[1].data
+        with fits.open('data/KiDS_catalogue.fits', memmap=True) as KIDS_fits:
+            KIDS_catalogue = KIDS_fits[1].data  # Access the data from the first extension
         return KIDS_catalogue
+    
     if catalogue == 'All':
+        # Loading all the catalogues and returning them as a tuple
         print('Loading DESI...')
-        DESI_catalogue = pd.read_csv('VLBI_source_matches_dr9-10_combi_complete.csv',header=0)
+        DESI_catalogue = pd.read_csv('data/DESI_catalogue.csv', header=0)
+        
         print('Loading SDSS...')
-        SDSS_catalogue = pd.read_csv('SDSS_DR17_Gal_QSO_jasorey_complete.csv',header=0)
+        SDSS_catalogue = pd.read_csv('data/SDSS_catalogue.csv', header=0)
+        
         print('Loading DES...')
-        DES_catalogue = pd.read_csv('DES_full_catalogue_Astrogeo.csv',header=0)
+        DES_catalogue = pd.read_csv('data/DES_catalogue.csv', header=0)
+        
         print('Loading Skymapper...')
-        Skymapper_catalogue = pd.read_csv('skymapper.csv',header=0)
+        Skymapper_catalogue = pd.read_csv('data/Skymapper_catalogue.csv', header=0)
+        
         print('Loading KIDS...')
-        with fits.open('KiDS_DR4.1_ugriZYJHKs_SOM_gold_WL_cat.fits',memmap=True) as KIDS_fits:
+        with fits.open('data/KiDS_catalogue.fits', memmap=True) as KIDS_fits:
             KIDS_catalogue = KIDS_fits[1].data
-        return DESI_catalogue,SDSS_catalogue,DES_catalogue,Skymapper_catalogue,KIDS_catalogue
+        
+        # Return all loaded catalogues as a tuple
+        return DESI_catalogue, SDSS_catalogue, DES_catalogue, Skymapper_catalogue, KIDS_catalogue
 
-def load_sampled_catalogues(size,SDSS_catalogue,KIDS_catalogue):
-    print('Loading sample of SDSS...')
-    SDSS_index = np.arange(0,len(SDSS_catalogue))
+def generate_sampled_catalogues(size, SDSS_catalogue, KIDS_catalogue):
+    """
+    Generates a random sample from the SDSS and KIDS catalogues, to latyer use in Figure 2.
+
+    This function takes the full SDSS and KIDS catalogues, and generates random samples 
+    of the specified size from each. The samples are selected without replacement.
+
+    Args:
+        size (int): The number of random samples to extract from each catalogue.
+        SDSS_catalogue (pd.DataFrame): The full SDSS catalogue in pandas DataFrame format.
+        KIDS_catalogue (array or DataFrame): The full KIDS catalogue, typically an array from a FITS file.
+
+    Saves:
+        - pd.DataFrame: Randomly sampled rows from the SDSS catalogue.
+        - np.ndarray or pd.DataFrame: Randomly sampled rows from the KIDS catalogue.
+    """
+    
+    # Load a random sample from the SDSS catalogue
+    print('Generating sample of SDSS...')
+    
+    # Generate an array of indices for the SDSS catalogue
+    SDSS_index = np.arange(0, len(SDSS_catalogue))
+    
+    # Randomly select 'size' number of indices from the SDSS index array
     SDSS_random_index = np.array(random.sample(list(SDSS_index), k=size))
+    
+    # Use the randomly selected indices to get a sample from the SDSS catalogue
     SDSS_sampled_catalogue = SDSS_catalogue.iloc[SDSS_random_index]
-    print('Loading sample of KIDS...')
-    KIDS_index = np.arange(0,len(KIDS_catalogue))
+    
+    # Load a random sample from the KIDS catalogue
+    print('Generating sample of KIDS...')
+    
+    # Generate an array of indices for the KIDS catalogue
+    KIDS_index = np.arange(0, len(KIDS_catalogue))
+    
+    # Randomly select 'size' number of indices from the KIDS index array
     KIDS_random_index = np.array(random.sample(list(KIDS_index), k=size))
-    KIDS_sampled_catalogue = KIDS_catalogue[KIDS_random_index]
-    return SDSS_sampled_catalogue,KIDS_sampled_catalogue
+    
+    # Use the randomly selected indices to get a sample from the KIDS catalogue
+    KIDS_sampled_catalogue = Table(KIDS_catalogue[KIDS_random_index])
+    
+    # Save the sampled catalogues as a pd.DataFrame
+    SDSS_sampled_catalogue.to_csv('data/SDSS_sampled_catalogue.csv', index=False) 
+    KIDS_sampled_catalogue.write('data/KIDS_sampled_catalogue.csv', delimiter=',', format='ascii') 
 
 
-def perform_xmatch(Astrogeo_good,catalogue,catalogue_name,catalogue_RA_name,catalogue_DEC_name):
-    print('Performing xmatch on '+catalogue_name+'...')
+def perform_xmatch(Astrogeo_good, catalogue, catalogue_name, catalogue_RA_name, catalogue_DEC_name):
+    """
+    Performs a cross-match between the Astrogeo catalogue and a given external catalogue.
+
+    This function matches the coordinates of the `Astrogeo_good` catalogue with those of the 
+    external catalogue specified by `catalogue_name`. It uses a maximum separation of 1 arcsecond 
+    to find the closest matches.
+
+    Args:
+        Astrogeo_good (pd.DataFrame): The filtered Astrogeo catalogue with valid coordinates.
+        catalogue (pd.DataFrame or array-like): The external catalogue to be matched with the Astrogeo catalogue.
+        catalogue_name (str): The name of the external catalogue (e.g., 'KIDS').
+        catalogue_RA_name (str): The name of the column in `catalogue` that contains RA values.
+        catalogue_DEC_name (str): The name of the column in `catalogue` that contains DEC values.
+
+    Saves:
+        - pd.DataFrame: The subset of `Astrogeo_good` that has matches in the external catalogue.
+        - pd.DataFrame or array-like: The subset of the external catalogue that matches the `Astrogeo_good` entries.
+    """
+    print('Performing xmatch on ' + catalogue_name + '...')
+    
+    # Extract RA and DEC from the Astrogeo catalogue and convert to SkyCoord objects
     Astrogeo_RA_good = np.array(Astrogeo_good.RA_deg)
     Astrogeo_DEC_good = np.array(Astrogeo_good.DEC_deg)
-    Astrogeo_coords_good = SkyCoord(Astrogeo_RA_good,Astrogeo_DEC_good,frame='icrs',unit='deg')
+    Astrogeo_coords_good = SkyCoord(Astrogeo_RA_good, Astrogeo_DEC_good, frame='icrs', unit='deg')
     
+    # Extract RA and DEC from the external catalogue and convert to SkyCoord objects
     catalogue_RA = catalogue[catalogue_RA_name]
     catalogue_DEC = catalogue[catalogue_DEC_name]
-    catalogue_coords = SkyCoord(catalogue_RA,catalogue_DEC,frame='icrs',unit='deg')
+    catalogue_coords = SkyCoord(catalogue_RA, catalogue_DEC, frame='icrs', unit='deg')
     
+    # Define the maximum separation for matches
     max_sep = 1 * u.arcsec
+    
+    # Perform the match and obtain indices and separation distances
     idx, d2d, d3d = Astrogeo_coords_good.match_to_catalog_sky(catalogue_coords)
+    
+    # Apply the separation constraint to filter matches
     sep_constraint = d2d < max_sep
+    
+    # Get the matched rows from the Astrogeo catalogue
     Astrogeo_catalogue_matches = Astrogeo_good[sep_constraint]
+    
+    # Get the matched rows from the external catalogue
     if catalogue_name == 'KIDS':
-        catalogue_Astrogeo_matches = catalogue[idx[sep_constraint]]
+        catalogue_Astrogeo_matches = Table(catalogue[idx[sep_constraint]])
+        catalogue_Astrogeo_matches.write('data/'+catalogue_name+'_xmatches'+'.csv', delimiter=',', format='ascii')
     else:
         catalogue_Astrogeo_matches = catalogue.iloc[idx[sep_constraint]]
+        catalogue_Astrogeo_matches.to_csv('data/'+catalogue_name+'_xmatches'+'.csv',index=False)
+    Astrogeo_catalogue_matches.to_csv('data/Astrogeo_'+catalogue_name+'.csv',index=False)
     
-    return Astrogeo_catalogue_matches,catalogue_Astrogeo_matches
+    
+def load_sampled_catalogues():
+    """
+    Load the SDSS and KIDS sampled catalogues from CSV files.
+
+    Returns:
+    --------
+    SDSS_sampled_catalogue : pandas.DataFrame
+        Data from the SDSS sampled catalogue.
+    KIDS_sampled_catalogue : pandas.DataFrame
+        Data from the KIDS sampled catalogue.
+    """
+    SDSS_sampled_catalogue = pd.read_csv('data/SDSS_sampled_catalogue.csv')
+    KIDS_sampled_catalogue = pd.read_csv('data/KIDS_sampled_catalogue.csv')
+    
+    return SDSS_sampled_catalogue, KIDS_sampled_catalogue
+    
+def load_xmatches(catalogue_name):
+    """
+    Load Astrogeo and cross-matches catalogues based on the provided catalogue name.
+
+    Parameters:
+    -----------
+    catalogue_name : str
+        The name of the catalogue to load (e.g., 'SDSS', 'DESI').
+
+    Returns:
+    --------
+    Astrogeo_catalogue : pandas.DataFrame
+        Data from the Astrogeo catalogue corresponding to the given catalogue name.
+    catalogue_xmatches : pandas.DataFrame
+        Cross-matches data for the given catalogue.
+    """
+    print('Loading '+catalogue_name+'...')
+    Astrogeo_catalogue = pd.read_csv(f'data/Astrogeo_{catalogue_name}.csv')
+    catalogue_xmatches = pd.read_csv(f'data/{catalogue_name}_xmatches.csv')
+    
+    return Astrogeo_catalogue, catalogue_xmatches
 
 def load_Eagle_sim():
+    """
+    Loads the Eagle simulation data from a FITS file.
+
+    This function reads the Eagle simulation data from the FITS file 'eagle_new.fits' 
+    and converts it into an Astropy Table for easier manipulation and analysis.
+
+    Returns:
+        astropy.table.Table: The Eagle simulation data as an Astropy Table.
+    """
     print('Loading Eagle simulation...')
-    with fits.open('eagle_new.fits') as Eagle_fits:
+    
+    # Open the FITS file and access the data from the first extension
+    with fits.open('data/Eagle_sim.fits') as Eagle_fits:
         Eagle_sim = Eagle_fits[1].data
+    
+    # Convert the data to an Astropy Table
     Eagle_sim = Table(Eagle_sim)
+    
+    # Return the Astropy Table containing the Eagle simulation data
     return Eagle_sim
-
-
-
-def get_DESI_data(Astrogeo_DESI,DESI_xmatches):
-    DESI_catalogue_Astrogeo_B_matches = np.array(DESI_xmatches.b_axis)
-    DESI_catalogue_Astrogeo_THETA_J2000_matches = np.array(DESI_xmatches.pos_angle)
-    DESI_catalogue_Astrogeo_THETA_J2000_ERR_ORIGINAL_matches = np.array(DESI_xmatches.pos_angle_err)
-    DESI_catalogue_Astrogeo_TYPE_matches = np.array(DESI_xmatches.TYPE)
-    DESI_catalogue_Astrogeo_MAG_Z_matches = np.array(DESI_xmatches.mag_z)
-    Astrogeo_DESI_catalogue_JET_PA_matches_good = np.array(Astrogeo_DESI.pa)
-    Astrogeo_DESI_catalogue_JET_PA_ERR_ORIGINAL_matches_good = np.array(Astrogeo_DESI.pa_err)
-    Astrogeo_DESI_catalogue_Z_good_matches = np.array(Astrogeo_DESI.Z)
-    
-    DESI_catalogue_Astrogeo_THETA_J2000_matches = np.fmod(DESI_catalogue_Astrogeo_THETA_J2000_matches+360,180)
-    DESI_catalogue_Astrogeo_THETA_J2000_matches[DESI_catalogue_Astrogeo_THETA_J2000_matches > 90] = DESI_catalogue_Astrogeo_THETA_J2000_matches[DESI_catalogue_Astrogeo_THETA_J2000_matches > 90] - 180      
-    DESI_catalogue_Astrogeo_PA_DIFFERENCE_matches = aux_functions.PA_difference(DESI_catalogue_Astrogeo_THETA_J2000_matches,Astrogeo_DESI_catalogue_JET_PA_matches_good)   
-    DESI_catalogue_Astrogeo_PA_DIFFERENCE_ERR_ORIGINAL_matches = np.sqrt(Astrogeo_DESI_catalogue_JET_PA_ERR_ORIGINAL_matches_good**2+DESI_catalogue_Astrogeo_THETA_J2000_ERR_ORIGINAL_matches**2)
-   
-    DESI_SOURCE_Z = np.array(Astrogeo_DESI_catalogue_Z_good_matches)
-    DESI_VLBI_PA = np.array(Astrogeo_DESI_catalogue_JET_PA_matches_good)
-    DESI_VLBI_PA_ERR_ORIGINAL = np.array(Astrogeo_DESI_catalogue_JET_PA_ERR_ORIGINAL_matches_good)
-    DESI_OPTICAL_PA = np.array(DESI_catalogue_Astrogeo_THETA_J2000_matches)
-    DESI_OPTICAL_PA_ERR_ORIGINAL = np.array(DESI_catalogue_Astrogeo_THETA_J2000_ERR_ORIGINAL_matches)
-    DESI_PA_DIFF = np.array(DESI_catalogue_Astrogeo_PA_DIFFERENCE_matches)
-    DESI_PA_DIFF_ERR_ORIGINAL = np.array(DESI_catalogue_Astrogeo_PA_DIFFERENCE_ERR_ORIGINAL_matches)
-    
-    return DESI_OPTICAL_PA,DESI_OPTICAL_PA_ERR_ORIGINAL,DESI_VLBI_PA,DESI_VLBI_PA_ERR_ORIGINAL,DESI_PA_DIFF,DESI_PA_DIFF_ERR_ORIGINAL,DESI_SOURCE_Z,DESI_catalogue_Astrogeo_B_matches,DESI_catalogue_Astrogeo_TYPE_matches,DESI_catalogue_Astrogeo_MAG_Z_matches
-
-
-
-def get_SDSS_data(Astrogeo_SDSS,SDSS_xmatches):
-  
-    SDSS_catalogue_Astrogeo_THETA_J2000_matches = np.array(SDSS_xmatches.modelPhi_r)
-    SDSS_catalogue_Astrogeo_THETA_J2000_ERR_ORIGINAL_matches = np.array(SDSS_xmatches.modelPhiErr)
-    Astrogeo_SDSS_catalogue_JET_PA_matches_good = np.array(Astrogeo_SDSS.pa)
-    Astrogeo_SDSS_catalogue_JET_PA_ERR_ORIGINAL_matches_good = np.array(Astrogeo_SDSS.pa_err)
-    Astrogeo_SDSS_catalogue_Z_matches_good = np.array(Astrogeo_SDSS.Z)
-    SDSS_catalogue_Astrogeo_TYPE_matches = np.array(SDSS_xmatches.type_r)
-    SDSS_catalogue_Astrogeo_B_matches = np.array(SDSS_xmatches.modelAB_r)*np.array(SDSS_xmatches.devrad_r)
-    
-    SDSS_catalogue_Astrogeo_THETA_J2000_matches = np.fmod(SDSS_catalogue_Astrogeo_THETA_J2000_matches+360,180)
-    SDSS_catalogue_Astrogeo_THETA_J2000_matches[SDSS_catalogue_Astrogeo_THETA_J2000_matches > 90] = SDSS_catalogue_Astrogeo_THETA_J2000_matches[SDSS_catalogue_Astrogeo_THETA_J2000_matches > 90] - 180    
-    SDSS_catalogue_Astrogeo_PA_DIFFERENCE_matches = aux_functions.PA_difference(SDSS_catalogue_Astrogeo_THETA_J2000_matches,Astrogeo_SDSS_catalogue_JET_PA_matches_good)
-    SDSS_catalogue_Astrogeo_PA_DIFFERENCE_ERR_ORIGINAL_matches = np.sqrt(Astrogeo_SDSS_catalogue_JET_PA_ERR_ORIGINAL_matches_good**2+SDSS_catalogue_Astrogeo_THETA_J2000_ERR_ORIGINAL_matches**2)    
-    
-    SDSS_SOURCE_Z = np.array(Astrogeo_SDSS_catalogue_Z_matches_good)
-    SDSS_VLBI_PA = np.array(Astrogeo_SDSS_catalogue_JET_PA_matches_good)
-    SDSS_VLBI_PA_ERR_ORIGINAL = np.array(Astrogeo_SDSS_catalogue_JET_PA_ERR_ORIGINAL_matches_good)
-    SDSS_OPTICAL_PA = np.array(SDSS_catalogue_Astrogeo_THETA_J2000_matches)
-    SDSS_OPTICAL_PA_ERR_ORIGINAL = np.array(SDSS_catalogue_Astrogeo_THETA_J2000_ERR_ORIGINAL_matches)
-    SDSS_PA_DIFF = np.array(SDSS_catalogue_Astrogeo_PA_DIFFERENCE_matches)
-    SDSS_PA_DIFF_ERR_ORIGINAL = np.array(SDSS_catalogue_Astrogeo_PA_DIFFERENCE_ERR_ORIGINAL_matches)
-   
-    return SDSS_OPTICAL_PA,SDSS_OPTICAL_PA_ERR_ORIGINAL,SDSS_VLBI_PA,SDSS_VLBI_PA_ERR_ORIGINAL, SDSS_PA_DIFF,SDSS_PA_DIFF_ERR_ORIGINAL,SDSS_SOURCE_Z,SDSS_catalogue_Astrogeo_TYPE_matches,SDSS_catalogue_Astrogeo_B_matches
-
-
-def get_DES_data(Astrogeo_DES,DES_xmatches):
-
-    DES_OPTICAL_PA = np.array(DES_xmatches.DES_full_catalogue_Astrogeo_THETA_J2000_matches)
-    DES_OPTICAL_PA_ERR_ORIGINAL = np.array(DES_xmatches.DES_full_catalogue_Astrogeo_ERRTHETA_IMAGE_matches)
-    DES_VLBI_PA = np.array(Astrogeo_DES.pa)
-    DES_VLBI_PA_ERR_ORIGINAL = np.array(Astrogeo_DES.pa_err)
-    DES_PA_DIFF = np.array(DES_xmatches.DES_full_catalogue_Astrogeo_PA_DIFFERENCE_matches)
-    DES_PA_DIFF_ERR_ORIGINAL = np.sqrt(DES_VLBI_PA_ERR_ORIGINAL**2+DES_OPTICAL_PA_ERR_ORIGINAL**2)  
-    DES_SOURCE_Z = np.array(DES_xmatches.Astrogeo_DES_full_catalogue_Z_good_matches)
-    DES_catalogue_Astrogeo_B_matches = 0.26*np.array(DES_xmatches.DES_full_catalogue_Astrogeo_B_matches)
-    DES_catalogue_Astrogeo_EXTENDED_CLASS_COADD_matches = np.array(DES_xmatches.DES_full_catalogue_Astrogeo_EXTENDED_CLASS_COADD_matches)
-    
-    return DES_OPTICAL_PA,DES_OPTICAL_PA_ERR_ORIGINAL,DES_VLBI_PA,DES_VLBI_PA_ERR_ORIGINAL,DES_PA_DIFF,DES_PA_DIFF_ERR_ORIGINAL,DES_SOURCE_Z,DES_catalogue_Astrogeo_EXTENDED_CLASS_COADD_matches,DES_catalogue_Astrogeo_B_matches
-
-
-def get_Skymapper_data(Astrogeo_Skymapper,Skymapper_xmatches):
-    
-    skymapper_Astrogeo_B_matches = 0.5*np.array(Skymapper_xmatches.b)
-    skymapper_Astrogeo_THETA_J2000_matches = np.array(Skymapper_xmatches.PA)
-    skymapper_Astrogeo_THETA_J2000_ERR_ORIGINAL_matches = np.array(Skymapper_xmatches.e_pa)
-    Astrogeo_skymapper_JET_PA_good_matches = np.array(Astrogeo_Skymapper.pa)
-    Astrogeo_skymapper_JET_PA_ERR_ORIGINAL_good_matches = np.array(Astrogeo_Skymapper.pa_err)
-    skymapper_Astrogeo_TYPE_matches = np.array(Skymapper_xmatches.ClassStar)
-    Astrogeo_skymapper_Z_good_matches = np.array(Astrogeo_Skymapper.Z)
-
-    skymapper_Astrogeo_THETA_J2000_matches = np.fmod(skymapper_Astrogeo_THETA_J2000_matches+360,180)
-    skymapper_Astrogeo_THETA_J2000_matches[skymapper_Astrogeo_THETA_J2000_matches > 90] = skymapper_Astrogeo_THETA_J2000_matches[skymapper_Astrogeo_THETA_J2000_matches > 90] - 180 
-    skymapper_Astrogeo_PA_DIFFERENCE_matches = aux_functions.PA_difference(skymapper_Astrogeo_THETA_J2000_matches,Astrogeo_skymapper_JET_PA_good_matches)
-    skymapper_Astrogeo_PA_DIFFERENCE_ERR_ORIGINAL_matches = np.sqrt(Astrogeo_skymapper_JET_PA_ERR_ORIGINAL_good_matches**2+skymapper_Astrogeo_THETA_J2000_ERR_ORIGINAL_matches**2)
-        
-    skymapper_SOURCE_Z = np.array(Astrogeo_skymapper_Z_good_matches)
-    skymapper_VLBI_PA = np.array(Astrogeo_skymapper_JET_PA_good_matches)
-    skymapper_VLBI_PA_ERR_ORIGINAL = np.array(Astrogeo_skymapper_JET_PA_ERR_ORIGINAL_good_matches)
-    skymapper_OPTICAL_PA = np.array(skymapper_Astrogeo_THETA_J2000_matches)
-    skymapper_OPTICAL_PA_ERR_ORIGINAL = np.array(skymapper_Astrogeo_THETA_J2000_ERR_ORIGINAL_matches)
-    skymapper_PA_DIFF = np.array(skymapper_Astrogeo_PA_DIFFERENCE_matches)
-    skymapper_PA_DIFF_ERR_ORIGINAL = np.array(skymapper_Astrogeo_PA_DIFFERENCE_ERR_ORIGINAL_matches)
-   
-    
-    return skymapper_OPTICAL_PA,skymapper_OPTICAL_PA_ERR_ORIGINAL,skymapper_VLBI_PA,skymapper_VLBI_PA_ERR_ORIGINAL,skymapper_PA_DIFF,skymapper_PA_DIFF_ERR_ORIGINAL,skymapper_SOURCE_Z,skymapper_Astrogeo_TYPE_matches,skymapper_Astrogeo_B_matches
-
-
-
-def get_Combined_data(Surveys_Data,Surveys_Good_Data):
-    
-    
-    Combined_VLBI_PA,Combined_VLBI_PA_ERR_ORIGINAL,Combined_Good_VLBI_PA,Combined_Good_VLBI_PA_ERR_ORIGINAL,Combined_OPTICAL_PA,Combined_OPTICAL_PA_ERR_ORIGINAL,Combined_Good_OPTICAL_PA,Combined_Good_OPTICAL_PA_ERR_ORIGINAL,Combined_PA_DIFF,Combined_PA_DIFF_ERR_ORIGINAL,Combined_Good_PA_DIFF,Combined_Good_PA_DIFF_ERR_ORIGINAL,Combined_SOURCE_Z,Combined_Good_SOURCE_Z = np.array(Surveys_Data.VLBI_Jet_PAs)[pd.isnull(Surveys_Data.Weighted_average_Jet_Minor_diffs) == False],np.array(Surveys_Data.VLBI_Jet_PA_errors)[pd.isnull(Surveys_Data.Weighted_average_Jet_Minor_diffs) == False],np.array(Surveys_Good_Data.VLBI_Jet_PAs)[pd.isnull(Surveys_Good_Data.Weighted_average_Jet_Minor_diffs) == False],np.array(Surveys_Good_Data.VLBI_Jet_PA_errors)[pd.isnull(Surveys_Good_Data.Weighted_average_Jet_Minor_diffs) == False],np.array(Surveys_Data.Weighted_average_Optical_Major_PAs)[pd.isnull(Surveys_Data.Weighted_average_Jet_Minor_diffs) == False],np.array(Surveys_Data.Weighted_average_Optical_Major_PA_errors)[pd.isnull(Surveys_Data.Weighted_average_Jet_Minor_diffs) == False],np.array(Surveys_Good_Data.Weighted_average_Optical_Major_PAs)[pd.isnull(Surveys_Good_Data.Weighted_average_Jet_Minor_diffs) == False],np.array(Surveys_Good_Data.Weighted_average_Optical_Major_PA_errors)[pd.isnull(Surveys_Good_Data.Weighted_average_Jet_Minor_diffs) == False],np.array(Surveys_Data.Weighted_average_Jet_Minor_diffs)[pd.isnull(Surveys_Data.Weighted_average_Jet_Minor_diffs) == False],np.array(Surveys_Data.Weighted_average_Jet_Minor_diffs_errors)[pd.isnull(Surveys_Data.Weighted_average_Jet_Minor_diffs) == False],np.array(Surveys_Good_Data.Weighted_average_Jet_Minor_diffs)[pd.isnull(Surveys_Good_Data.Weighted_average_Jet_Minor_diffs) == False],np.array(Surveys_Good_Data.Weighted_average_Jet_Minor_diffs_errors)[pd.isnull(Surveys_Good_Data.Weighted_average_Jet_Minor_diffs) == False],np.array(Surveys_Data.Z)[pd.isnull(Surveys_Data.Weighted_average_Jet_Minor_diffs) == False],np.array(Surveys_Good_Data.Z)[pd.isnull(Surveys_Good_Data.Weighted_average_Jet_Minor_diffs) == False]
-    return Combined_VLBI_PA,Combined_VLBI_PA_ERR_ORIGINAL,Combined_Good_VLBI_PA,Combined_Good_VLBI_PA_ERR_ORIGINAL,Combined_OPTICAL_PA,Combined_OPTICAL_PA_ERR_ORIGINAL,Combined_Good_OPTICAL_PA,Combined_Good_OPTICAL_PA_ERR_ORIGINAL,Combined_PA_DIFF,Combined_PA_DIFF_ERR_ORIGINAL,Combined_Good_PA_DIFF,Combined_Good_PA_DIFF_ERR_ORIGINAL,Combined_SOURCE_Z,Combined_Good_SOURCE_Z 
