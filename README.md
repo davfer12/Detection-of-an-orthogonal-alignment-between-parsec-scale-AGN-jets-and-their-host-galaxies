@@ -18,7 +18,13 @@ The 'pregenerate_neccesary_data' script deals with taking the original optical c
 
 The 'main' script uses all other files to load the catalogues and cross-matches and execute every function to generate all the Figures.
 
-The 'data' folder includes the whole VLBI Astrogeo data, the mentioned optical/VLBI cross-matches, the sampled optical catalogues and the Eagle simulation data.
+The 'data' folder includes the following files:
+- Astrogeo_catalogue.csv: The whole VLBI Astrogeo data.
+- Astrogeo_{catalogue}.csv: The cross-matched Astrogeo VLBI data with the corresponding optical catalogue.
+- {catalogue}_xmatches.csv: The corresponding cross-matched optical catalogue data with the Astrogeo VLBI catalogue.
+whole VLBI Astrogeo data, the mentioned optical/VLBI cross-matches, the sampled optical catalogues and the Eagle simulation data.
+- SDSS_sampled_catalogue.csv,KIDS_sampled_catalogue.csv: The randomly sampled SDSS and KIDS data used in the coverage map of Figure 2.
+- Eagle_sim.csv: The Eagle simulation data.
 
 The 'paper_figures' folder includes all the Figures of the paper. 
 
