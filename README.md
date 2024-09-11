@@ -34,7 +34,7 @@ The 'paper_figures' folder includes all the Figures of the paper.
 
 ## Instructions of use
 If the user wants to reproduce the figures, they have to follow these simple steps:
-- Save all these files together with the 'data' folder.
+- Save all these files together with the 'data' and 'paper_figures' folders. One can delete the figures insde the 'paper_figures' folder if they wish.
 - In the same directory where all the files and the data folder is saved, first run 'pip install -r requirements.txt' to install all python dependencies.
 - Run the 'main.py' script. One can do so with the following command: 'python3.8 main.py > out.out' to get an output file with the progress.
-The figures will be saved in the 'paper_figures' folder. 
+The figures will be saved in the 'paper_figures' folder, overwriting them if they were not previously remnoved from that folder.  
