@@ -2,7 +2,7 @@
 This is the necesary code and data to reproduce the figures and results of the Nature Astro paper 'Detection of an orthogonal alignment between parsec scale AGN
 jets and their host galaxies' (D. Fernández Gil, J. A. Hodgson, B. L’Huillier, J. Asorey, C. Saulder, K. Finner, M. J. Jee, D. Parkinson, F. Combes). 
 
-##File descriptions
+## File descriptions
 
 The 'requirements.txt' lists all neccesary python packages and versions that must be installed.
 
