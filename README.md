@@ -2,7 +2,11 @@
 This is the necesary code and data to reproduce the figures and results of the Nature Astro paper 'Detection of an orthogonal alignment between parsec scale AGN
 jets and their host galaxies' (D. Fernández Gil, J. A. Hodgson, B. L’Huillier, J. Asorey, C. Saulder, K. Finner, M. J. Jee, D. Parkinson, F. Combes). 
 
-The 'libraries.py' file imports all necessary python libraries and dependencies as of Python 3.8.
+##File descriptions
+
+The 'requirements.txt' lists all neccesary python packages and versions that must be installed.
+
+The 'libraries.py' file imports all necessary python libraries and dependencies.
 
 The 'data_loading_and_xmatching.py' file contains all functions pertaining to loading the catalogues, performing the cross-matches, saving them into csv files and loading them afterwards.
 
@@ -28,4 +32,9 @@ whole VLBI Astrogeo data, the mentioned optical/VLBI cross-matches, the sampled 
 
 The 'paper_figures' folder includes all the Figures of the paper. 
 
-If the user wants to reproduce the Figures, they just have to save all these files together with the 'data' folder and run the 'main' script. The figures will be saved in the 'paper_figures' folder. 
+## Instructions of use
+If the user wants to reproduce the figures, they have to follow this simple steps:
+- Save all these files together with the 'data' folder.
+- In the same directory where all the files and the data folder is saved, first run 'pip install -r requirements.txt' to install all python dependencies.
+- Run the 'main.py' script. One can do so with the following command: 'python3.8 main.py > out.out' to get an output file with the progress.
+The figures will be saved in the 'paper_figures' folder. 
