@@ -9,7 +9,7 @@ Astrogeo_catalogue = data_loading_and_xmatching.load_Astrogeo_catalogue()
 Astrogeo_good_catalogue = data_loading_and_xmatching.get_Astrogeo_good_catalogue(Astrogeo_catalogue)
 
 #Load the whole optical catalogues
-DESI_catalogue,SDSS_catalogue,DES_catalogue,Skymapper_catalogue,KIDS_catalogue = data_loading_and_xmatching.load_catalogues('All')ç
+DESI_catalogue,SDSS_catalogue,DES_catalogue,Skymapper_catalogue,KIDS_catalogue = data_loading_and_xmatching.load_catalogues('All')
 
 
 #Perform cross-matches bewteen the VLBI and each optical survey
