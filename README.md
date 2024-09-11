@@ -1,10 +1,10 @@
 # VLBI_optical_project
-This is the necesary code and data to reproduce the figures and results of the Nature Astro paper 'Detection of an orthogonal alignment between parsec scale AGN
+This is the necessary code and data to reproduce the figures and results of the Nature Astro paper 'Detection of an orthogonal alignment between parsec scale AGN
 jets and their host galaxies' (D. Fernández Gil, J. A. Hodgson, B. L’Huillier, J. Asorey, C. Saulder, K. Finner, M. J. Jee, D. Parkinson, F. Combes). 
 
 ## File descriptions
 
-The 'requirements.txt' lists all neccesary python packages and versions that must be installed.
+The 'requirements.txt' lists all necessary python packages and versions that must be installed.
 
 The 'libraries.py' file imports all necessary python libraries and dependencies.
 
@@ -33,7 +33,7 @@ whole VLBI Astrogeo data, the mentioned optical/VLBI cross-matches, the sampled 
 The 'paper_figures' folder includes all the Figures of the paper. 
 
 ## Instructions of use
-If the user wants to reproduce the figures, they have to follow this simple steps:
+If the user wants to reproduce the figures, they have to follow these simple steps:
 - Save all these files together with the 'data' folder.
 - In the same directory where all the files and the data folder is saved, first run 'pip install -r requirements.txt' to install all python dependencies.
 - Run the 'main.py' script. One can do so with the following command: 'python3.8 main.py > out.out' to get an output file with the progress.
