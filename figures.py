@@ -71,8 +71,8 @@ def Figure_2(data):
         lh._sizes = [30]  
         lh.set_alpha(1)
     
-    plt.xlabel('RA (deg)')
-    plt.ylabel('DEC (deg)')
+    plt.xlabel(r'RA ($^{{\circ}}$)')
+    plt.ylabel(r'DEC ($^{{\circ}}$)')
     plt.grid(True)
     
     plt.savefig('paper_figures/Figure_2.pdf', dpi=300, bbox_inches='tight')
@@ -194,7 +194,7 @@ def Figure_4(data):
     counts, _ = np.histogram(delta_PA, bins=bins_array)
     
     ax1.hist(delta_PA, bins=bins_array)
-    ax1.set_xlabel(r'$\Delta$PA')
+    ax1.set_xlabel(r'$\Delta$PA ($^{{\circ}}$)')
     ax1.text(0.5,-0.2, "(a)", size=12, ha="center", transform=ax1.transAxes)
     ax1.set_title(r'Eagle simulation elliptical galaxies with no scatter')
     ax1.text(0.5, -0.2, "(a)", size=12, ha="center", transform=ax1.transAxes)
@@ -227,7 +227,7 @@ def Figure_4(data):
     # Plot histogram for uniform spin orientations
     ax2.bar(bins_array[:-1], counts_avg, bins_array[1] - bins_array[0], align='edge')
     ax2.errorbar(bins_center, counts_avg, yerr=counts_std, fmt='None', capsize=5, ecolor='k')
-    ax2.set_xlabel(r'$\Delta$PA')
+    ax2.set_xlabel(r'$\Delta$PA ($^{{\circ}}$)')
     ax2.text(0.5,-0.2, "(b)", size=12, ha="center", transform=ax2.transAxes)
     ax2.set_title(r'Eagle simulation elliptical galaxies with uniform spin orientations')
     ax2.set_ylim([0,225])
@@ -273,7 +273,7 @@ def Figure_4(data):
     # Plot histogram for Gaussian scatter
     ax3.bar(bins_array[:-1], counts_avg, bins_array[1] - bins_array[0], align='edge')
     ax3.errorbar(bins_center, counts_avg, yerr=counts_std, fmt='None', capsize=5, ecolor='k')
-    ax3.set_xlabel(r'$\Delta$PA')
+    ax3.set_xlabel(r'$\Delta$PA ($^{{\circ}}$)')
     ax3.text(0.5,-0.2, "(c)", size=12, ha="center", transform=ax3.transAxes)
     ax3.set_title(r'Eagle simulation elliptical galaxies with gaussian scatter with $\epsilon$ = {}'.format(epsilon))
 
@@ -318,7 +318,7 @@ def Figure_4(data):
     # Plot histogram for uniform scatter
     ax4.bar(bins_array[:-1], counts_avg, bins_array[1] - bins_array[0], align='edge')
     ax4.errorbar(bins_center, counts_avg, yerr=counts_std, fmt='None', capsize=5, ecolor='k', label='Counts +/- SD of bin height')
-    ax4.set_xlabel(r'$\Delta$PA')
+    ax4.set_xlabel(r'$\Delta$PA ($^{{\circ}}$)')
     ax4.text(0.5,-0.2, "(d)", size=12, ha="center", transform=ax4.transAxes)
     ax4.set_title(r'Eagle simulation elliptical galaxies with uniform scatter with $\epsilon$ = {}'.format(epsilon))
 
@@ -529,14 +529,14 @@ def Figure_M4(data):
     ax1.plot([-270, 270], [-270, 270], 'k--', lw=2)
     ax1.set_aspect(1)
     ax1.set_facecolor('white')
-    ax1.set_xlabel('Jet PA')
-    ax1.set_ylabel('Closest Optical minor axis PA')
+    ax1.set_xlabel(r'Jet PA ($^{{\circ}}$)')
+    ax1.set_ylabel(r'Closest Optical minor axis PA ($^{{\circ}}$)')
     ax1.set_title('All cases')
 
     # Plot 2: Histogram of differences for all cases
     ax2 = plt.subplot(222)
     ax2.hist(np.abs(y_mod - x_mod), bins=np.linspace(0, 90, 6), orientation='horizontal')
-    ax2.set_ylabel('y-x (deg)')
+    ax2.set_ylabel(r'y-x ($^{{\circ}}$)')
     ax2.yaxis.tick_right()
     ax2.yaxis.set_label_position("right")
     ax2.set_title('All cases')
@@ -559,14 +559,14 @@ def Figure_M4(data):
     ax3.plot([-270, 270], [-270, 270], 'k--', lw=2)
     ax3.set_aspect(1)
     ax3.set_facecolor('white')
-    ax3.set_xlabel('Jet PA')
-    ax3.set_ylabel('Closest Optical minor axis PA')
+    ax3.set_xlabel(r'Jet PA ($^{{\circ}}$)')
+    ax3.set_ylabel(r'Closest Optical minor axis PA ($^{{\circ}}$)')
     ax3.set_title('Good cases, z < {}'.format(z_bound))
 
     # Plot 4: Histogram of differences for good cases with z < z_bound
     ax4 = plt.subplot(224)
     ax4.hist(np.abs(y_mod - x_mod), bins=np.linspace(0, 90, 6), orientation='horizontal')
-    ax4.set_ylabel('y-x (deg)')
+    ax4.set_ylabel(r'y-x ($^{{\circ}}$)')
     ax4.yaxis.tick_right()
     ax4.yaxis.set_label_position("right")
     ax4.set_title('Good cases, z < {}'.format(z_bound))
@@ -658,8 +658,8 @@ def Figure_M5(data):
     ax2.set_xlim([0, 90])
     ax2.set_ylim([-180, 180])
     fig.colorbar(im, ax=ax2, orientation='vertical', label='Counts per bin')
-    ax2.set_ylabel('Jet PA')
-    ax2.set_xlabel(r'$\Delta$PA')
+    ax2.set_ylabel(r'Jet PA ($^{{\circ}}$)')
+    ax2.set_xlabel(r'$\Delta$PA ($^{{\circ}}$)')
     
     fig.legend(bbox_to_anchor=(0.8, 1.), frameon=False, borderaxespad=0., fontsize=10, bbox_transform=fig.transFigure)
     
