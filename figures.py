@@ -331,7 +331,7 @@ def Figure_4(data):
     
     
     
-def Figure_M1(data):
+def Supplementary_Figure_1(data):
     """
     Generate and save a histogram plot of position angles (PA) from the provided data.
 
@@ -360,11 +360,11 @@ def Figure_M1(data):
     plt.gcf().subplots_adjust(bottom=0.15)
     
     # Save and show plot
-    plt.savefig('paper_figures/Figure_M1.pdf', dpi=200)
+    plt.savefig('paper_figures/Supplementary_Figure_1.pdf', dpi=200)
     plt.show()
     
     
-def Figure_M2(data):
+def Supplementary_Figure_2(data):
     """
     Generate and save histograms comparing position angles for DESI and SkyMapper optical cross-matches.
 
@@ -411,11 +411,293 @@ def Figure_M2(data):
     plt.gcf().subplots_adjust(bottom=0.15)
     
     # Save and show plot
-    plt.savefig('paper_figures/Figure_M2.pdf', dpi=200)
+    plt.savefig('paper_figures/Supplementary_Figure_2.pdf', dpi=200)
     plt.show()
+
+def Supplementary_Figure_3(data):
+    """
+    Generate and save histograms for combined survey data, including VLBI and optical position angles and their differences.
+
+    Parameters:
+    ----------
+    data : tuple
+        Contains the following elements:
+        - Surveys_Data : DataFrame
+            Data from various surveys.
+        - Surveys_Good_Data : DataFrame
+            Data from the good quality surveys.
+        - max_tol_err : float
+            Maximum tolerance for error.
+        - max_tol_Z_array : array-like
+            Array of tolerance values for redshift.
+        - N_bins : int
+            Number of bins for histograms.
+    """
+    # Unpack data
+    Surveys_Data, Surveys_Good_Data, max_tol_err, max_tol_Z_array, N_bins = data
+    
+    # Extract combined data
+    (Combined_VLBI_PA, Combined_VLBI_PA_ERR_ORIGINAL, Combined_Good_VLBI_PA, Combined_Good_VLBI_PA_ERR_ORIGINAL, 
+     Combined_OPTICAL_PA, Combined_OPTICAL_PA_ERR_ORIGINAL, Combined_Good_OPTICAL_PA, Combined_Good_OPTICAL_PA_ERR_ORIGINAL, 
+     Combined_PA_DIFF, Combined_PA_DIFF_ERR_ORIGINAL, Combined_Good_PA_DIFF, Combined_Good_PA_DIFF_ERR_ORIGINAL, 
+     Combined_SOURCE_Z, Combined_Good_SOURCE_Z) = get_catalogue_parameters.get_Combined_data(Surveys_Data, Surveys_Good_Data)
+    
+    # Define survey name and output file name
+    Survey_Name = 'Combined'
+    Png_Name = 'Supplementary_Figure_3.pdf'
+    
+    # Generate histograms
+    final_p_values_5_bins, final_p_values_2_bins = main_functions.Histograms(
+        Combined_VLBI_PA,
+        Combined_VLBI_PA_ERR_ORIGINAL,
+        Combined_OPTICAL_PA,
+        Combined_OPTICAL_PA_ERR_ORIGINAL,
+        Combined_PA_DIFF,
+        Combined_PA_DIFF_ERR_ORIGINAL,
+        Combined_SOURCE_Z,
+        max_tol_err,
+        max_tol_Z_array,
+        Survey_Name,
+        Png_Name,
+        N_bins,
+        True,
+        VLBI_PA_GOOD=Combined_Good_VLBI_PA,
+        VLBI_PA_GOOD_ERR=Combined_Good_VLBI_PA_ERR_ORIGINAL,
+        OPTICAL_PA_GOOD=Combined_Good_OPTICAL_PA,
+        OPTICAL_PA_GOOD_ERR=Combined_Good_OPTICAL_PA_ERR_ORIGINAL,
+        PA_DIFF_GOOD=Combined_Good_PA_DIFF,
+        PA_DIFF_GOOD_ERR=Combined_Good_PA_DIFF_ERR_ORIGINAL,
+        SOURCE_Z_GOOD=Combined_Good_SOURCE_Z
+    )
+
+    
+        
+    
+def Supplementary_Figure_4(data):
+    """
+    Generate and save histograms for SDSS r band data, including VLBI and optical position angles and their differences.
+
+    Parameters:
+    ----------
+    data : tuple
+        Contains the following elements:
+        - Astrogeo_SDSS : DataFrame
+            Data from SDSS.
+        - SDSS_xmatches : DataFrame
+            Cross-match data for SDSS.
+        - max_tol_err : float
+            Maximum tolerance for error.
+        - max_tol_Z_array : array-like
+            Array of tolerance values for redshift.
+        - N_bins : int
+            Number of bins for histograms.
+    """
+    # Unpack data
+    Astrogeo_SDSS, SDSS_xmatches, max_tol_err, max_tol_Z_array, N_bins = data
+    
+    # Extract SDSS data
+    (SDSS_OPTICAL_PA, SDSS_OPTICAL_PA_ERR_ORIGINAL, SDSS_VLBI_PA, SDSS_VLBI_PA_ERR_ORIGINAL, 
+     SDSS_PA_DIFF, SDSS_PA_DIFF_ERR_ORIGINAL, SDSS_SOURCE_Z, SDSS_catalogue_Astrogeo_TYPE_matches, 
+     SDSS_catalogue_Astrogeo_B_matches) = get_catalogue_parameters.get_SDSS_data(Astrogeo_SDSS, SDSS_xmatches)
+    
+    # Apply filters
+    SDSS_good_cases_cut = np.array(SDSS_catalogue_Astrogeo_TYPE_matches) == 3
+    b_cut = SDSS_catalogue_Astrogeo_B_matches > 1.3
+
+    # Define survey name and output file name
+    Survey_Name = 'SDSS r band'
+    Png_Name = 'Supplementary_Figure_4.pdf'
+
+    # Generate histograms
+    final_p_values_5_bins, final_p_values_2_bins = main_functions.Histograms(
+        SDSS_VLBI_PA[b_cut],
+        SDSS_VLBI_PA_ERR_ORIGINAL[b_cut],
+        SDSS_OPTICAL_PA[b_cut],
+        SDSS_OPTICAL_PA_ERR_ORIGINAL[b_cut],
+        SDSS_PA_DIFF[b_cut],
+        SDSS_PA_DIFF_ERR_ORIGINAL[b_cut],
+        SDSS_SOURCE_Z[b_cut],
+        max_tol_err,
+        max_tol_Z_array,
+        Survey_Name,
+        Png_Name,
+        N_bins,
+        False,
+        good_cases_cut=SDSS_good_cases_cut[b_cut]
+    )
+
+    
+
+
+def Supplementary_Figure_5(data):
+    """
+    Generate and save histograms for DES data, including VLBI and optical position angles and their differences.
+
+    Parameters:
+    ----------
+    data : tuple
+        Contains the following elements:
+        - Astrogeo_DES : DataFrame
+            Data from DES.
+        - DES_xmatches : DataFrame
+            Cross-match data for DES.
+        - max_tol_err : float
+            Maximum tolerance for error.
+        - max_tol_Z_array : array-like
+            Array of tolerance values for redshift.
+        - N_bins : int
+            Number of bins for histograms.
+    """
+    # Unpack data
+    Astrogeo_DES, DES_xmatches, max_tol_err, max_tol_Z_array, N_bins = data
+    
+    # Extract DES data
+    (DES_OPTICAL_PA, DES_OPTICAL_PA_ERR_ORIGINAL, DES_VLBI_PA, DES_VLBI_PA_ERR_ORIGINAL, 
+     DES_PA_DIFF, DES_PA_DIFF_ERR_ORIGINAL, DES_SOURCE_Z, 
+     DES_catalogue_Astrogeo_EXTENDED_CLASS_COADD_matches, DES_catalogue_Astrogeo_B_matches) = get_catalogue_parameters.get_DES_data(Astrogeo_DES, DES_xmatches)
+    
+    # Apply filters
+    DES_good_cases_cut = np.in1d(DES_catalogue_Astrogeo_EXTENDED_CLASS_COADD_matches, [2, 3])
+    b_cut = DES_catalogue_Astrogeo_B_matches > 1.3
+    
+    # Define survey name and output file name
+    Survey_Name = 'DES'
+    Png_Name = 'Supplementary_Figure_5.pdf'    
+    
+    # Generate histograms
+    final_p_values_5_bins, final_p_values_2_bins = main_functions.Histograms(
+        DES_VLBI_PA[b_cut],
+        DES_VLBI_PA_ERR_ORIGINAL[b_cut],
+        DES_OPTICAL_PA[b_cut],
+        DES_OPTICAL_PA_ERR_ORIGINAL[b_cut],
+        DES_PA_DIFF[b_cut],
+        DES_PA_DIFF_ERR_ORIGINAL[b_cut],
+        DES_SOURCE_Z[b_cut],
+        max_tol_err,
+        max_tol_Z_array,
+        Survey_Name,
+        Png_Name,
+        N_bins,
+        False,
+        good_cases_cut=DES_good_cases_cut[b_cut]
+    )
+
     
     
-def Figure_M3(data):
+    
+def Supplementary_Figure_6(data):
+    """
+    Generate and save histograms for SkyMapper data, including VLBI and optical position angles and their differences.
+
+    Parameters:
+    ----------
+    data : tuple
+        Contains the following elements:
+        - Astrogeo_Skymapper : DataFrame
+            Data from SkyMapper.
+        - Skymapper_xmatches : DataFrame
+            Cross-match data for SkyMapper.
+        - max_tol_err : float
+            Maximum tolerance for error.
+        - max_tol_Z_array : array-like
+            Array of tolerance values for redshift.
+        - N_bins : int
+            Number of bins for histograms.
+    """
+    # Unpack data
+    Astrogeo_Skymapper, Skymapper_xmatches, max_tol_err, max_tol_Z_array, N_bins = data
+    
+    # Extract SkyMapper data
+    (Skymapper_OPTICAL_PA, Skymapper_OPTICAL_PA_ERR_ORIGINAL, Skymapper_VLBI_PA, 
+     Skymapper_VLBI_PA_ERR_ORIGINAL, Skymapper_PA_DIFF, Skymapper_PA_DIFF_ERR_ORIGINAL, 
+     Skymapper_SOURCE_Z, Skymapper_Astrogeo_TYPE_matches, Skymapper_Astrogeo_B_matches) = get_catalogue_parameters.get_Skymapper_data(Astrogeo_Skymapper, Skymapper_xmatches)
+    
+    # Apply filters
+    b_filter = 2.0
+    stellar_index_filter = 0.5
+    Skymapper_good_cases_cut = (Skymapper_Astrogeo_B_matches > b_filter) & (Skymapper_Astrogeo_TYPE_matches < stellar_index_filter)
+    b_cut = Skymapper_Astrogeo_B_matches > 1.3
+    
+    # Define survey name and output file name
+    Survey_Name = 'SkyMapper'
+    Png_Name = 'Supplementary_Figure_6.pdf'
+    
+    # Generate histograms
+    final_p_values_5_bins, final_p_values_2_bins = main_functions.Histograms(
+        Skymapper_VLBI_PA[b_cut],
+        Skymapper_VLBI_PA_ERR_ORIGINAL[b_cut],
+        Skymapper_OPTICAL_PA[b_cut],
+        Skymapper_OPTICAL_PA_ERR_ORIGINAL[b_cut],
+        Skymapper_PA_DIFF[b_cut],
+        Skymapper_PA_DIFF_ERR_ORIGINAL[b_cut],
+        Skymapper_SOURCE_Z[b_cut],
+        max_tol_err,
+        max_tol_Z_array,
+        Survey_Name,
+        Png_Name,
+        N_bins,
+        False,
+        good_cases_cut=Skymapper_good_cases_cut[b_cut]
+    )
+
+
+def Supplementary_Figure_7(data):
+    """
+    Generate and save histograms comparing position angles for DESI data with various cuts applied.
+
+    Parameters:
+    ----------
+    data : tuple
+        Contains the following elements:
+        - Astrogeo_DESI : DataFrame
+            Data from the Astrogeo and DESI catalogues.
+        - DESI_xmatches : DataFrame
+            Cross-match data between DESI and Astrogeo.
+        - max_tol_err : float
+            Maximum tolerance for error.
+        - max_tol_Z_array : array-like
+            Array of maximum tolerance values for redshift.
+        - N_bins : int
+            Number of bins to use in the histograms.
+    """
+    # Unpack data
+    Astrogeo_DESI, DESI_xmatches, max_tol_err, max_tol_Z_array, N_bins = data
+    
+    # Extract position angles and associated errors from the DESI data
+    DESI_OPTICAL_PA, DESI_OPTICAL_PA_ERR_ORIGINAL, DESI_VLBI_PA, DESI_VLBI_PA_ERR_ORIGINAL, \
+    DESI_PA_DIFF, DESI_PA_DIFF_ERR_ORIGINAL, DESI_SOURCE_Z, DESI_catalogue_Astrogeo_B_matches, \
+    DESI_catalogue_Astrogeo_TYPE_matches, DESI_catalogue_Astrogeo_MAG_Z_matches = \
+        get_catalogue_parameters.get_DESI_data(Astrogeo_DESI, DESI_xmatches)
+    
+    # Filter to include only specified types of sources
+    DESI_good_cases_cut = np.in1d(DESI_catalogue_Astrogeo_TYPE_matches, ['SER', 'EXP', 'DEV'])
+    
+    # Define survey name and output file name
+    Survey_Name = 'DESI LS'
+    Png_Name = 'Supplementary_Figure_7.pdf'
+    
+    # Apply a brightness cut
+    b_cut = DESI_catalogue_Astrogeo_B_matches > 1.3
+    
+    # Generate histograms with specified parameters
+    final_p_values_5_bins, final_p_values_2_bins = main_functions.Histograms(
+        DESI_VLBI_PA[b_cut], 
+        DESI_VLBI_PA_ERR_ORIGINAL[b_cut], 
+        DESI_OPTICAL_PA[b_cut], 
+        DESI_OPTICAL_PA_ERR_ORIGINAL[b_cut], 
+        DESI_PA_DIFF[b_cut], 
+        DESI_PA_DIFF_ERR_ORIGINAL[b_cut], 
+        DESI_SOURCE_Z[b_cut], 
+        max_tol_err, 
+        max_tol_Z_array, 
+        Survey_Name, 
+        Png_Name, 
+        N_bins, 
+        False, 
+        good_cases_cut=DESI_good_cases_cut[b_cut]
+    )
+
+def Supplementary_Figure_8(data):
     """
     Generate and save histogram plots comparing position angles (PA) between DESI VLBI and optical data.
 
@@ -450,7 +732,7 @@ def Figure_M3(data):
     
     # Define survey name and output file name
     Survey_Name = 'DESI LS' + ' MAG_Z < ' + str(max_mag_tol)
-    Png_Name = 'Figure_M3.pdf'
+    Png_Name = 'Supplementary_Figure_8.pdf'
     
     # Apply magnitude and B-magnitude cuts
     mag_cut = DESI_catalogue_Astrogeo_MAG_Z_matches < max_mag_tol
@@ -472,11 +754,106 @@ def Figure_M3(data):
         N_bins, 
         False, 
         good_cases_cut=DESI_good_cases_cut[b_cut & mag_cut]
-    )
+    )    
 
-               
+
+def Supplementary_Figure_9(data):
+    """
+    Generate and save a histogram and error plot of position angle differences versus redshift bins for DESI data.
+
+    Parameters:
+    ----------
+    data : tuple
+        Contains the following elements:
+        - Astrogeo_DESI : DataFrame
+            Data from the Astrogeo catalogue.
+        - DESI_xmatches : DataFrame
+            Cross-match data between DESI and Astrogeo.
+        - z_tol : float
+            Redshift cutoff value.
+    """
+    # Unpack data
+    Astrogeo_DESI, DESI_xmatches, z_tol = data
+    
+    # Extract relevant arrays from data
+    DESI_SOURCE_Z = np.array(Astrogeo_DESI.Z)
+    DESI_catalogue_Astrogeo_TYPE_matches = np.array(DESI_xmatches.TYPE)
+    DESI_good_cases_cut = np.in1d(DESI_catalogue_Astrogeo_TYPE_matches, ['SER', 'EXP', 'DEV'])
+    DESI_catalogue_Astrogeo_B_matches = np.array(DESI_xmatches.b_axis)
+    DESI_catalogue_Astrogeo_THETA_J2000_matches = np.array(DESI_xmatches.pos_angle)
+    Astrogeo_DESI_catalogue_JET_PA_matches_good = np.array(Astrogeo_DESI.pa)
+    
+    # Compute position angle differences
+    DESI_PA_DIFF = aux_functions.PA_difference(DESI_catalogue_Astrogeo_THETA_J2000_matches, Astrogeo_DESI_catalogue_JET_PA_matches_good)
+    
+    # Apply redshift cutoff
+    z_cut = DESI_SOURCE_Z < z_tol
+    
+    # Filter valid data
+    x = DESI_SOURCE_Z[DESI_good_cases_cut & (np.isnan(DESI_SOURCE_Z) == False) & z_cut]
+    y = DESI_PA_DIFF[DESI_good_cases_cut & (np.isnan(DESI_SOURCE_Z) == False) & z_cut]
+    
+    # Define bin edges
+    n = 10
+    n_bins = np.linspace(0, 1, n + 1)
+
+    # Bin the data
+    y_bins = np.zeros(len(n_bins) - 1, dtype='object')
+    y_means = np.zeros(len(n_bins) - 1)
+    for i in range(len(n_bins) - 1):
+        y_i = y[(n_bins[i] < x) & (x < n_bins[i + 1])]
+        y_bins[i] = y_i
+        y_means[i] = np.mean(y_i)
+
+    # Compute statistics for each bin
+    mean_stat = binned_statistic(x, y, statistic='mean', bins=n_bins, range=(0, np.nanmax(x)))
+    counts_stat = binned_statistic(x, y, statistic='count', bins=n_bins, range=(0, np.nanmax(x)))
+    median_stat = binned_statistic(x, y, statistic='median', bins=n_bins, range=(0, np.nanmax(x)))
+    std_stat = binned_statistic(x, y, statistic='std', bins=n_bins, range=(0, np.nanmax(x)))
+    upp_pctl_stat = binned_statistic(x, y, statistic=lambda y: np.percentile(y, 84), bins=n_bins, range=(0, np.nanmax(x)))
+    lower_pctl_stat = binned_statistic(x, y, statistic=lambda y: np.percentile(y, 16), bins=n_bins, range=(0, np.nanmax(x)))
+
+    # Extract statistics for bins
+    upp_pctl_bins = upp_pctl_stat.statistic
+    lower_pctl_bins = lower_pctl_stat.statistic
+    mean_bins = mean_stat.statistic
+    median_bins = median_stat.statistic
+    std_bins = std_stat.statistic
+    bin_centers = (mean_stat.bin_edges[1:] + mean_stat.bin_edges[:-1]) / 2
+
+    # Compute confidence intervals
+    conf_intervals_arr = np.zeros((n, 2))
+    conf_intervals_arr[:] = [16, 84]
+    yerrors = np.array([median_bins - lower_pctl_bins, upp_pctl_bins - median_bins])
+
+    # Create plot
+    fig, ax1 = plt.subplots()
+
+    # Plot histogram
+    ax1.hist(x, bins=n_bins, alpha=0.2)
+    ax1.set_ylabel('Counts')
+    ax1.set_xlabel('z bin centers')
+   
+    
+    # Create twin axis for error bar plot
+    ax2 = ax1.twinx()
+    ax2 = plt.gca()
+    plt.errorbar(bin_centers, median_bins, yerr=yerrors, xerr=None, fmt='None', elinewidth=1, capsize=3, ecolor='k', alpha=0.5, label='68% confidence interval')
+    ax2.scatter(bin_centers, mean_bins, s=7, c='b', label='mean')
+    ax2.scatter(bin_centers, median_bins, s=7, c='r', label='median')
+    ax2.set_ylim([0, 90])
+    ax2.axhline(y=45, ls='--', color='k', alpha=0.5)
+    ax2.set_ylabel(r'$\Delta$PA ($^{{\circ}}$)')
+    
+    # Add legend and title
+    plt.legend(frameon=False, bbox_to_anchor=(0.9, 0.98), ncols=3, fontsize=8)
+    plt.title('DESI good cases, z < {}'.format(z_tol))
+    
+    # Save and show plot
+    plt.savefig('paper_figures/Supplementary_Figure_9.pdf', dpi=100)
+    plt.show()               
         
-def Figure_M4(data):
+def Supplementary_Figure_10(data):
     """
     Generate and save scatter plots and histograms comparing position angles (PA) between DESI VLBI and optical data.
 
@@ -588,12 +965,12 @@ def Figure_M4(data):
     # Adjust layout and save figure
     plt.subplots_adjust(wspace=0.1, hspace=0.2)
     fig.suptitle('DESI')
-    plt.savefig('paper_figures/Figure_M4.pdf', dpi=100, bbox_inches='tight')
+    plt.savefig('paper_figures/Supplementary_Figure_10.pdf', dpi=100, bbox_inches='tight')
     plt.show()
 
         
 
-def Figure_M5(data):
+def Supplementary_Figure_11(data):
     """
     Generate and save histograms and scatter plots comparing position angle differences between DESI VLBI and optical data.
 
@@ -665,394 +1042,10 @@ def Figure_M5(data):
     
     # Add overall title and save figure
     fig.suptitle(r'DESI good cases, z < {}'.format(z_bound))
-    plt.savefig('paper_figures/Figure_M5.pdf', dpi=100, bbox_inches='tight')
+    plt.savefig('paper_figures/Supplementary_Figure_11.pdf', dpi=100, bbox_inches='tight')
     plt.show()
 
     
-            
-
-def Figure_M6(data):
-    """
-    Generate and save histograms comparing position angles for DESI data with various cuts applied.
-
-    Parameters:
-    ----------
-    data : tuple
-        Contains the following elements:
-        - Astrogeo_DESI : DataFrame
-            Data from the Astrogeo and DESI catalogues.
-        - DESI_xmatches : DataFrame
-            Cross-match data between DESI and Astrogeo.
-        - max_tol_err : float
-            Maximum tolerance for error.
-        - max_tol_Z_array : array-like
-            Array of maximum tolerance values for redshift.
-        - N_bins : int
-            Number of bins to use in the histograms.
-    """
-    # Unpack data
-    Astrogeo_DESI, DESI_xmatches, max_tol_err, max_tol_Z_array, N_bins = data
-    
-    # Extract position angles and associated errors from the DESI data
-    DESI_OPTICAL_PA, DESI_OPTICAL_PA_ERR_ORIGINAL, DESI_VLBI_PA, DESI_VLBI_PA_ERR_ORIGINAL, \
-    DESI_PA_DIFF, DESI_PA_DIFF_ERR_ORIGINAL, DESI_SOURCE_Z, DESI_catalogue_Astrogeo_B_matches, \
-    DESI_catalogue_Astrogeo_TYPE_matches, DESI_catalogue_Astrogeo_MAG_Z_matches = \
-        get_catalogue_parameters.get_DESI_data(Astrogeo_DESI, DESI_xmatches)
-    
-    # Filter to include only specified types of sources
-    DESI_good_cases_cut = np.in1d(DESI_catalogue_Astrogeo_TYPE_matches, ['SER', 'EXP', 'DEV'])
-    
-    # Define survey name and output file name
-    Survey_Name = 'DESI LS'
-    Png_Name = 'Figure_M6.pdf'
-    
-    # Apply a brightness cut
-    b_cut = DESI_catalogue_Astrogeo_B_matches > 1.3
-    
-    # Generate histograms with specified parameters
-    final_p_values_5_bins, final_p_values_2_bins = main_functions.Histograms(
-        DESI_VLBI_PA[b_cut], 
-        DESI_VLBI_PA_ERR_ORIGINAL[b_cut], 
-        DESI_OPTICAL_PA[b_cut], 
-        DESI_OPTICAL_PA_ERR_ORIGINAL[b_cut], 
-        DESI_PA_DIFF[b_cut], 
-        DESI_PA_DIFF_ERR_ORIGINAL[b_cut], 
-        DESI_SOURCE_Z[b_cut], 
-        max_tol_err, 
-        max_tol_Z_array, 
-        Survey_Name, 
-        Png_Name, 
-        N_bins, 
-        False, 
-        good_cases_cut=DESI_good_cases_cut[b_cut]
-    )
-
-    
-
-
-def Figure_M7(data):
-    """
-    Generate and save a histogram and error plot of position angle differences versus redshift bins for DESI data.
-
-    Parameters:
-    ----------
-    data : tuple
-        Contains the following elements:
-        - Astrogeo_DESI : DataFrame
-            Data from the Astrogeo catalogue.
-        - DESI_xmatches : DataFrame
-            Cross-match data between DESI and Astrogeo.
-        - z_tol : float
-            Redshift cutoff value.
-    """
-    # Unpack data
-    Astrogeo_DESI, DESI_xmatches, z_tol = data
-    
-    # Extract relevant arrays from data
-    DESI_SOURCE_Z = np.array(Astrogeo_DESI.Z)
-    DESI_catalogue_Astrogeo_TYPE_matches = np.array(DESI_xmatches.TYPE)
-    DESI_good_cases_cut = np.in1d(DESI_catalogue_Astrogeo_TYPE_matches, ['SER', 'EXP', 'DEV'])
-    DESI_catalogue_Astrogeo_B_matches = np.array(DESI_xmatches.b_axis)
-    DESI_catalogue_Astrogeo_THETA_J2000_matches = np.array(DESI_xmatches.pos_angle)
-    Astrogeo_DESI_catalogue_JET_PA_matches_good = np.array(Astrogeo_DESI.pa)
-    
-    # Compute position angle differences
-    DESI_PA_DIFF = aux_functions.PA_difference(DESI_catalogue_Astrogeo_THETA_J2000_matches, Astrogeo_DESI_catalogue_JET_PA_matches_good)
-    
-    # Apply redshift cutoff
-    z_cut = DESI_SOURCE_Z < z_tol
-    
-    # Filter valid data
-    x = DESI_SOURCE_Z[DESI_good_cases_cut & (np.isnan(DESI_SOURCE_Z) == False) & z_cut]
-    y = DESI_PA_DIFF[DESI_good_cases_cut & (np.isnan(DESI_SOURCE_Z) == False) & z_cut]
-    
-    # Define bin edges
-    n = 10
-    n_bins = np.linspace(0, 1, n + 1)
-
-    # Bin the data
-    y_bins = np.zeros(len(n_bins) - 1, dtype='object')
-    y_means = np.zeros(len(n_bins) - 1)
-    for i in range(len(n_bins) - 1):
-        y_i = y[(n_bins[i] < x) & (x < n_bins[i + 1])]
-        y_bins[i] = y_i
-        y_means[i] = np.mean(y_i)
-
-    # Compute statistics for each bin
-    mean_stat = binned_statistic(x, y, statistic='mean', bins=n_bins, range=(0, np.nanmax(x)))
-    counts_stat = binned_statistic(x, y, statistic='count', bins=n_bins, range=(0, np.nanmax(x)))
-    median_stat = binned_statistic(x, y, statistic='median', bins=n_bins, range=(0, np.nanmax(x)))
-    std_stat = binned_statistic(x, y, statistic='std', bins=n_bins, range=(0, np.nanmax(x)))
-    upp_pctl_stat = binned_statistic(x, y, statistic=lambda y: np.percentile(y, 84), bins=n_bins, range=(0, np.nanmax(x)))
-    lower_pctl_stat = binned_statistic(x, y, statistic=lambda y: np.percentile(y, 16), bins=n_bins, range=(0, np.nanmax(x)))
-
-    # Extract statistics for bins
-    upp_pctl_bins = upp_pctl_stat.statistic
-    lower_pctl_bins = lower_pctl_stat.statistic
-    mean_bins = mean_stat.statistic
-    median_bins = median_stat.statistic
-    std_bins = std_stat.statistic
-    bin_centers = (mean_stat.bin_edges[1:] + mean_stat.bin_edges[:-1]) / 2
-
-    # Compute confidence intervals
-    conf_intervals_arr = np.zeros((n, 2))
-    conf_intervals_arr[:] = [16, 84]
-    yerrors = np.array([median_bins - lower_pctl_bins, upp_pctl_bins - median_bins])
-
-    # Create plot
-    fig, ax1 = plt.subplots()
-
-    # Plot histogram
-    ax1.hist(x, bins=n_bins, alpha=0.2)
-    ax1.set_ylabel('Counts')
-    ax1.set_xlabel('z bin centers')
-   
-    
-    # Create twin axis for error bar plot
-    ax2 = ax1.twinx()
-    ax2 = plt.gca()
-    plt.errorbar(bin_centers, median_bins, yerr=yerrors, xerr=None, fmt='None', elinewidth=1, capsize=3, ecolor='k', alpha=0.5, label='68% confidence interval')
-    ax2.scatter(bin_centers, mean_bins, s=7, c='b', label='mean')
-    ax2.scatter(bin_centers, median_bins, s=7, c='r', label='median')
-    ax2.set_ylim([0, 90])
-    ax2.axhline(y=45, ls='--', color='k', alpha=0.5)
-    ax2.set_ylabel(r'$\Delta$PA ($^{{\circ}}$)')
-    
-    # Add legend and title
-    plt.legend(frameon=False, bbox_to_anchor=(0.9, 0.98), ncols=3, fontsize=8)
-    plt.title('DESI good cases, z < {}'.format(z_tol))
-    
-    # Save and show plot
-    plt.savefig('paper_figures/Figure_M7.pdf', dpi=100)
-    plt.show()
-
-    
-
-def Figure_M8(data):
-    """
-    Generate and save histograms for combined survey data, including VLBI and optical position angles and their differences.
-
-    Parameters:
-    ----------
-    data : tuple
-        Contains the following elements:
-        - Surveys_Data : DataFrame
-            Data from various surveys.
-        - Surveys_Good_Data : DataFrame
-            Data from the good quality surveys.
-        - max_tol_err : float
-            Maximum tolerance for error.
-        - max_tol_Z_array : array-like
-            Array of tolerance values for redshift.
-        - N_bins : int
-            Number of bins for histograms.
-    """
-    # Unpack data
-    Surveys_Data, Surveys_Good_Data, max_tol_err, max_tol_Z_array, N_bins = data
-    
-    # Extract combined data
-    (Combined_VLBI_PA, Combined_VLBI_PA_ERR_ORIGINAL, Combined_Good_VLBI_PA, Combined_Good_VLBI_PA_ERR_ORIGINAL, 
-     Combined_OPTICAL_PA, Combined_OPTICAL_PA_ERR_ORIGINAL, Combined_Good_OPTICAL_PA, Combined_Good_OPTICAL_PA_ERR_ORIGINAL, 
-     Combined_PA_DIFF, Combined_PA_DIFF_ERR_ORIGINAL, Combined_Good_PA_DIFF, Combined_Good_PA_DIFF_ERR_ORIGINAL, 
-     Combined_SOURCE_Z, Combined_Good_SOURCE_Z) = get_catalogue_parameters.get_Combined_data(Surveys_Data, Surveys_Good_Data)
-    
-    # Define survey name and output file name
-    Survey_Name = 'Combined'
-    Png_Name = 'Figure_M8.pdf'
-    
-    # Generate histograms
-    final_p_values_5_bins, final_p_values_2_bins = main_functions.Histograms(
-        Combined_VLBI_PA,
-        Combined_VLBI_PA_ERR_ORIGINAL,
-        Combined_OPTICAL_PA,
-        Combined_OPTICAL_PA_ERR_ORIGINAL,
-        Combined_PA_DIFF,
-        Combined_PA_DIFF_ERR_ORIGINAL,
-        Combined_SOURCE_Z,
-        max_tol_err,
-        max_tol_Z_array,
-        Survey_Name,
-        Png_Name,
-        N_bins,
-        True,
-        VLBI_PA_GOOD=Combined_Good_VLBI_PA,
-        VLBI_PA_GOOD_ERR=Combined_Good_VLBI_PA_ERR_ORIGINAL,
-        OPTICAL_PA_GOOD=Combined_Good_OPTICAL_PA,
-        OPTICAL_PA_GOOD_ERR=Combined_Good_OPTICAL_PA_ERR_ORIGINAL,
-        PA_DIFF_GOOD=Combined_Good_PA_DIFF,
-        PA_DIFF_GOOD_ERR=Combined_Good_PA_DIFF_ERR_ORIGINAL,
-        SOURCE_Z_GOOD=Combined_Good_SOURCE_Z
-    )
-
-    
-        
-    
-def Figure_M9(data):
-    """
-    Generate and save histograms for SDSS r band data, including VLBI and optical position angles and their differences.
-
-    Parameters:
-    ----------
-    data : tuple
-        Contains the following elements:
-        - Astrogeo_SDSS : DataFrame
-            Data from SDSS.
-        - SDSS_xmatches : DataFrame
-            Cross-match data for SDSS.
-        - max_tol_err : float
-            Maximum tolerance for error.
-        - max_tol_Z_array : array-like
-            Array of tolerance values for redshift.
-        - N_bins : int
-            Number of bins for histograms.
-    """
-    # Unpack data
-    Astrogeo_SDSS, SDSS_xmatches, max_tol_err, max_tol_Z_array, N_bins = data
-    
-    # Extract SDSS data
-    (SDSS_OPTICAL_PA, SDSS_OPTICAL_PA_ERR_ORIGINAL, SDSS_VLBI_PA, SDSS_VLBI_PA_ERR_ORIGINAL, 
-     SDSS_PA_DIFF, SDSS_PA_DIFF_ERR_ORIGINAL, SDSS_SOURCE_Z, SDSS_catalogue_Astrogeo_TYPE_matches, 
-     SDSS_catalogue_Astrogeo_B_matches) = get_catalogue_parameters.get_SDSS_data(Astrogeo_SDSS, SDSS_xmatches)
-    
-    # Apply filters
-    SDSS_good_cases_cut = np.array(SDSS_catalogue_Astrogeo_TYPE_matches) == 3
-    b_cut = SDSS_catalogue_Astrogeo_B_matches > 1.3
-
-    # Define survey name and output file name
-    Survey_Name = 'SDSS r band'
-    Png_Name = 'Figure_M9.pdf'
-
-    # Generate histograms
-    final_p_values_5_bins, final_p_values_2_bins = main_functions.Histograms(
-        SDSS_VLBI_PA[b_cut],
-        SDSS_VLBI_PA_ERR_ORIGINAL[b_cut],
-        SDSS_OPTICAL_PA[b_cut],
-        SDSS_OPTICAL_PA_ERR_ORIGINAL[b_cut],
-        SDSS_PA_DIFF[b_cut],
-        SDSS_PA_DIFF_ERR_ORIGINAL[b_cut],
-        SDSS_SOURCE_Z[b_cut],
-        max_tol_err,
-        max_tol_Z_array,
-        Survey_Name,
-        Png_Name,
-        N_bins,
-        False,
-        good_cases_cut=SDSS_good_cases_cut[b_cut]
-    )
-
-    
-
-
-def Figure_M10(data):
-    """
-    Generate and save histograms for DES data, including VLBI and optical position angles and their differences.
-
-    Parameters:
-    ----------
-    data : tuple
-        Contains the following elements:
-        - Astrogeo_DES : DataFrame
-            Data from DES.
-        - DES_xmatches : DataFrame
-            Cross-match data for DES.
-        - max_tol_err : float
-            Maximum tolerance for error.
-        - max_tol_Z_array : array-like
-            Array of tolerance values for redshift.
-        - N_bins : int
-            Number of bins for histograms.
-    """
-    # Unpack data
-    Astrogeo_DES, DES_xmatches, max_tol_err, max_tol_Z_array, N_bins = data
-    
-    # Extract DES data
-    (DES_OPTICAL_PA, DES_OPTICAL_PA_ERR_ORIGINAL, DES_VLBI_PA, DES_VLBI_PA_ERR_ORIGINAL, 
-     DES_PA_DIFF, DES_PA_DIFF_ERR_ORIGINAL, DES_SOURCE_Z, 
-     DES_catalogue_Astrogeo_EXTENDED_CLASS_COADD_matches, DES_catalogue_Astrogeo_B_matches) = get_catalogue_parameters.get_DES_data(Astrogeo_DES, DES_xmatches)
-    
-    # Apply filters
-    DES_good_cases_cut = np.in1d(DES_catalogue_Astrogeo_EXTENDED_CLASS_COADD_matches, [2, 3])
-    b_cut = DES_catalogue_Astrogeo_B_matches > 1.3
-    
-    # Define survey name and output file name
-    Survey_Name = 'DES'
-    Png_Name = 'Figure_M10.pdf'    
-    
-    # Generate histograms
-    final_p_values_5_bins, final_p_values_2_bins = main_functions.Histograms(
-        DES_VLBI_PA[b_cut],
-        DES_VLBI_PA_ERR_ORIGINAL[b_cut],
-        DES_OPTICAL_PA[b_cut],
-        DES_OPTICAL_PA_ERR_ORIGINAL[b_cut],
-        DES_PA_DIFF[b_cut],
-        DES_PA_DIFF_ERR_ORIGINAL[b_cut],
-        DES_SOURCE_Z[b_cut],
-        max_tol_err,
-        max_tol_Z_array,
-        Survey_Name,
-        Png_Name,
-        N_bins,
-        False,
-        good_cases_cut=DES_good_cases_cut[b_cut]
-    )
-
-    
-    
-    
-def Figure_M11(data):
-    """
-    Generate and save histograms for SkyMapper data, including VLBI and optical position angles and their differences.
-
-    Parameters:
-    ----------
-    data : tuple
-        Contains the following elements:
-        - Astrogeo_Skymapper : DataFrame
-            Data from SkyMapper.
-        - Skymapper_xmatches : DataFrame
-            Cross-match data for SkyMapper.
-        - max_tol_err : float
-            Maximum tolerance for error.
-        - max_tol_Z_array : array-like
-            Array of tolerance values for redshift.
-        - N_bins : int
-            Number of bins for histograms.
-    """
-    # Unpack data
-    Astrogeo_Skymapper, Skymapper_xmatches, max_tol_err, max_tol_Z_array, N_bins = data
-    
-    # Extract SkyMapper data
-    (Skymapper_OPTICAL_PA, Skymapper_OPTICAL_PA_ERR_ORIGINAL, Skymapper_VLBI_PA, 
-     Skymapper_VLBI_PA_ERR_ORIGINAL, Skymapper_PA_DIFF, Skymapper_PA_DIFF_ERR_ORIGINAL, 
-     Skymapper_SOURCE_Z, Skymapper_Astrogeo_TYPE_matches, Skymapper_Astrogeo_B_matches) = get_catalogue_parameters.get_Skymapper_data(Astrogeo_Skymapper, Skymapper_xmatches)
-    
-    # Apply filters
-    b_filter = 2.0
-    stellar_index_filter = 0.5
-    Skymapper_good_cases_cut = (Skymapper_Astrogeo_B_matches > b_filter) & (Skymapper_Astrogeo_TYPE_matches < stellar_index_filter)
-    b_cut = Skymapper_Astrogeo_B_matches > 1.3
-    
-    # Define survey name and output file name
-    Survey_Name = 'SkyMapper'
-    Png_Name = 'Figure_M11.pdf'
-    
-    # Generate histograms
-    final_p_values_5_bins, final_p_values_2_bins = main_functions.Histograms(
-        Skymapper_VLBI_PA[b_cut],
-        Skymapper_VLBI_PA_ERR_ORIGINAL[b_cut],
-        Skymapper_OPTICAL_PA[b_cut],
-        Skymapper_OPTICAL_PA_ERR_ORIGINAL[b_cut],
-        Skymapper_PA_DIFF[b_cut],
-        Skymapper_PA_DIFF_ERR_ORIGINAL[b_cut],
-        Skymapper_SOURCE_Z[b_cut],
-        max_tol_err,
-        max_tol_Z_array,
-        Survey_Name,
-        Png_Name,
-        N_bins,
-        False,
-        good_cases_cut=Skymapper_good_cases_cut[b_cut]
-    )
 
     
     
