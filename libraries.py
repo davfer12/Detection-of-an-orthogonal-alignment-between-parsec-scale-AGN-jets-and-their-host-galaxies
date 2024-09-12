@@ -10,8 +10,6 @@ import matplotlib.colors as mcolors
 import matplotlib.lines as mlines
 from astropy.io import fits
 from astropy.table import Table
-from astroquery.sdss import SDSS
-from astroquery.skyview import SkyView
 from astropy import coordinates as coords
 from astropy.coordinates import SkyCoord
 from astropy.coordinates import ICRS, Galactic, FK4, FK5
@@ -31,6 +29,3 @@ from collections import defaultdict
 from scipy.optimize import curve_fit
 import matplotlib.gridspec as gridspec
 import matplotlib.patches as patches
-import seaborn as sns
-# reset RC params to original
-sns.reset_orig()
