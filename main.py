@@ -48,12 +48,12 @@ Figure_4_data = Eagle_sim
 figures.Figure_4(Figure_4_data)
 
 # Figure M1: Astrogeo catalogue pa distribution
-Figure_M1_data = Astrogeo_catalogue
-figures.Figure_M1(Figure_M1_data)
+Supplementary_Figure_1_data = Astrogeo_catalogue
+figures.Figure_M1(Supplementary_Figure_1_data)
 
 # Figure M2: Comparison of DESI and Skymapper pa distribution
-Figure_M2_data = (DESI_xmatches, Skymapper_xmatches)
-figures.Figure_M2(Figure_M2_data)
+Supplementary_Figure_2_data = (DESI_xmatches, Skymapper_xmatches)
+figures.Figure_M2(Supplementary_Figure_2_data)
 
 # Figure M3: Analysis with DESI data including magnitude tolerance
 N_bins = 5
