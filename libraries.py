@@ -23,7 +23,6 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 from scipy.stats import kstest
 from scipy.stats import binned_statistic
 import random
-from statsmodels.stats.diagnostic import anderson_statistic as ad_stat
 from scipy import stats
 from collections import defaultdict
 from scipy.optimize import curve_fit
