@@ -1,5 +1,5 @@
 # VLBI_optical_project
-This is the necessary code and data to reproduce the figures and results of the Nature Astro paper 'Detection of an orthogonal alignment between parsec scale AGN
+This is the necessary code and data to reproduce the figures (except Figure 1, which was done by hand) and results of the Nature Astro paper 'Detection of an orthogonal alignment between parsec scale AGN
 jets and their host galaxies' (D. Fernández Gil, J. A. Hodgson, B. L’Huillier, J. Asorey, C. Saulder, K. Finner, M. J. Jee, D. Parkinson, F. Combes). 
 
 ## File descriptions
@@ -24,10 +24,10 @@ The 'main.py' script uses all other files to load the catalogues and cross-match
 
 The 'data' folder includes the following files:
 - Astrogeo_catalogue.csv: The whole VLBI Astrogeo data.
-- Astrogeo_{catalogue}.csv: The cross-matched Astrogeo VLBI data with the corresponding optical catalogue.
-- {catalogue}_xmatches.csv: The corresponding cross-matched optical catalogue data with the Astrogeo VLBI catalogue.
-whole VLBI Astrogeo data, the mentioned optical/VLBI cross-matches, the sampled optical catalogues and the Eagle simulation data.
-- SDSS_sampled_catalogue.csv,KIDS_sampled_catalogue.csv: The randomly sampled SDSS and KIDS data used in the coverage map of Figure 2.
+- Astrogeo_catalogue_no_redshift.csv: The name and coordinates of the radio sources without a measured redshift. Follow up observations can help constrain their shape and orientation and expand our results. 
+- Astrogeo_{survey_name}.csv: The cross-matched Astrogeo VLBI data with the corresponding optical survey.
+- {survey_name}_xmatches.csv: The corresponding cross-matched optical survey data with the Astrogeo VLBI catalogue.
+- SDSS_sampled_catalogue.csv and KIDS_sampled_catalogue.csv: The randomly sampled SDSS and KIDS data used in the coverage map of Figure 2.
 - Eagle_sim.csv: The Eagle simulation data.
 
 The 'paper_figures' folder includes all the Figures of the paper. 
