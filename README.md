@@ -1,5 +1,4 @@
 # Detection of an orthogonal alignment between parsec scale AGN jets and their host galaxies
-jets and their host galaxies
 This is the code and data to reproduce the figures (except Figure 1, which was done by hand) and results of the Nature Astro paper 'Detection of an orthogonal alignment between parsec scale AGN jets and their host galaxies' (D. Fernández Gil, J. A. Hodgson, B. L’Huillier, J. Asorey, C. Saulder, K. Finner, M. J. Jee, D. Parkinson, F. Combes). 
 
 ## File descriptions
