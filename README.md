@@ -29,7 +29,7 @@ The 'data' folder includes the following files:
 - {survey_name}_xmatches.csv: The corresponding cross-matched optical survey data with the Astrogeo VLBI catalogue.
 - SDSS_sampled_catalogue.csv and KIDS_sampled_catalogue.csv: The randomly sampled SDSS and KIDS data used in the coverage map of Figure 2.
 - Eagle_sim.csv: The Eagle simulation data.
-
+The list of optical surveys {survey_name} are: DESI, SDSS, DES, Skymapper and KIDS.
 The 'paper_figures' folder includes all the Figures of the paper. 
 
 ## Instructions of use
