@@ -15,11 +15,11 @@ This is the code and data to reproduce the figures (except Figure 1, which was d
 
 - 'main_functions.py': Contains the root of the data handling and analysis. It creates a combined dataset from the individual catalogues, prepares the data for the histogram figures, obtains the p-values and plots the histograms.
 
--'figures.py': Contains functions that generate every figure of the paper (except Figure 1).
+- 'figures.py': Contains functions that generate every figure of the paper (except Figure 1).
 
--'pregenerate_neccesary_data.py': Deals with taking the original optical catalogue data and performing a cross-match with the VLBI data, as well as taking a random sample from two of the catalogues which are used in the coverage map of Figure 2. We include this code here for transparency purposes, but the original optical catalogue data is too heavy to upload. We only upload the cross-matched outputs generated from this script in the data files. 
+- 'pregenerate_neccesary_data.py': Deals with taking the original optical catalogue data and performing a cross-match with the VLBI data, as well as taking a random sample from two of the catalogues which are used in the coverage map of Figure 2. We include this code here for transparency purposes, but the original optical catalogue data is too heavy to upload. We only upload the cross-matched outputs generated from this script in the data files. 
 
--'main.py': Uses all other files to load the catalogues and cross-matches and executes every function to generate the figures.
+- 'main.py': Uses all other files to load the catalogues and cross-matches and executes every function to generate the figures.
 
 The 'data' folder includes the following files:
 - Astrogeo_catalogue.csv: The whole VLBI Astrogeo data.
