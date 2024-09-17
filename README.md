@@ -24,7 +24,7 @@ The 'main.py' script uses all other files to load the catalogues and cross-match
 
 The 'data' folder includes the following files:
 - Astrogeo_catalogue.csv: The whole VLBI Astrogeo data.
-- Astrogeo_catalogue_no_redshift.csv: The name and coordinates of the radio sources without a measured redshift. Follow up observations can help constrain their shape and orientation and expand our results. 
+- Astrogeo_catalogue_no_redshift.csv: The name and coordinates of the VLBI radio sources without a measured redshift.
 - Astrogeo_{survey_name}.csv: The cross-matched Astrogeo VLBI data with the corresponding optical survey.
 - {survey_name}_xmatches.csv: The corresponding cross-matched optical survey data with the Astrogeo VLBI catalogue.
 - SDSS_sampled_catalogue.csv and KIDS_sampled_catalogue.csv: The randomly sampled SDSS and KIDS data used in the coverage map of Figure 2.
