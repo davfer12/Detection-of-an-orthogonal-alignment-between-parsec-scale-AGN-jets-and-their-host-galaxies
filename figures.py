@@ -852,6 +852,7 @@ def Supplementary_Figure_9(data):
     # Save and show plot
     plt.savefig('paper_figures/Supplementary_Figure_9.pdf', dpi=100)
     plt.show()               
+ 
         
 def Supplementary_Figure_10(data):
     """
@@ -909,6 +910,7 @@ def Supplementary_Figure_10(data):
     ax1.set_xlabel(r'Jet PA ($^{{\circ}}$)')
     ax1.set_ylabel(r'Closest Optical minor axis PA ($^{{\circ}}$)')
     ax1.set_title('All cases')
+    ax1.text(0.5, -0.2, 'a)', size=15, ha="center", transform=ax1.transAxes)
 
     # Plot 2: Histogram of differences for all cases
     ax2 = plt.subplot(222)
@@ -917,6 +919,7 @@ def Supplementary_Figure_10(data):
     ax2.yaxis.tick_right()
     ax2.yaxis.set_label_position("right")
     ax2.set_title('All cases')
+    ax2.text(0.5, -0.2, 'b)', size=15, ha="center", transform=ax2.transAxes)
 
     # Plot 3: Scatter plot of original and modulated PA for good cases with z < z_bound
     x_original = DESI_VLBI_PA[DESI_good_cases_cut & z_cut & b_cut]
@@ -939,6 +942,7 @@ def Supplementary_Figure_10(data):
     ax3.set_xlabel(r'Jet PA ($^{{\circ}}$)')
     ax3.set_ylabel(r'Closest Optical minor axis PA ($^{{\circ}}$)')
     ax3.set_title('Good cases, z < {}'.format(z_bound))
+    ax3.text(0.5, -0.2, 'c)', size=15, ha="center", transform=ax3.transAxes)
 
     # Plot 4: Histogram of differences for good cases with z < z_bound
     ax4 = plt.subplot(224)
@@ -947,12 +951,14 @@ def Supplementary_Figure_10(data):
     ax4.yaxis.tick_right()
     ax4.yaxis.set_label_position("right")
     ax4.set_title('Good cases, z < {}'.format(z_bound))
+    ax4.text(0.5, -0.2, 'd)', size=15, ha="center", transform=ax4.transAxes)
 
     # Add lines to the figure
-    line1 = plt.Line2D([0.425, 0.53], [0.82, 0.55], color='k', linewidth=2, transform=fig.transFigure)
-    line2 = plt.Line2D([0.425, 0.53], [0.87, 0.865], color='k', linewidth=2, transform=fig.transFigure)
-    line3 = plt.Line2D([0.425, 0.53], [0.40, 0.13], color='k', linewidth=2, transform=fig.transFigure)
-    line4 = plt.Line2D([0.425, 0.53], [0.45, 0.445], color='k', linewidth=2, transform=fig.transFigure)
+    line1 = plt.Line2D([0.38, 0.45], [0.92, 0.91], color='k', linewidth=2, transform=fig.transFigure)
+    line2 = plt.Line2D([0.38, 0.45], [0.86, 0.59], color='k', linewidth=2, transform=fig.transFigure)
+    line3 = plt.Line2D([0.38, 0.45], [0.44, 0.435], color='k', linewidth=2, transform=fig.transFigure)
+    line4 = plt.Line2D([0.38, 0.45], [0.39, 0.12], color='k', linewidth=2, transform=fig.transFigure)
+  
     
     fig.add_artist(line1)
     fig.add_artist(line2)
@@ -965,6 +971,7 @@ def Supplementary_Figure_10(data):
     # Adjust layout and save figure
     plt.subplots_adjust(wspace=0.1, hspace=0.2)
     fig.suptitle('DESI')
+    fig.tight_layout()
     plt.savefig('paper_figures/Supplementary_Figure_10.pdf', dpi=100, bbox_inches='tight')
     plt.show()
 
