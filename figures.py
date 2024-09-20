@@ -915,7 +915,7 @@ def Supplementary_Figure_10(data):
     # Plot 2: Histogram of differences for all cases
     ax2 = plt.subplot(222)
     ax2.hist(np.abs(y_mod - x_mod), bins=np.linspace(0, 90, 6), orientation='horizontal')
-    ax2.set_ylabel(r'y-x ($^{{\circ}}$)')
+    ax2.set_ylabel(r'Closest Optical minor axis PA - Jet PA ($^{{\circ}}$)')
     ax2.yaxis.tick_right()
     ax2.yaxis.set_label_position("right")
     ax2.set_title('All cases')
@@ -947,7 +947,7 @@ def Supplementary_Figure_10(data):
     # Plot 4: Histogram of differences for good cases with z < z_bound
     ax4 = plt.subplot(224)
     ax4.hist(np.abs(y_mod - x_mod), bins=np.linspace(0, 90, 6), orientation='horizontal')
-    ax4.set_ylabel(r'y-x ($^{{\circ}}$)')
+    ax4.set_ylabel(r'Closest Optical minor axis PA - Jet PA ($^{{\circ}}$)')
     ax4.yaxis.tick_right()
     ax4.yaxis.set_label_position("right")
     ax4.set_title('Good cases, z < {}'.format(z_bound))
