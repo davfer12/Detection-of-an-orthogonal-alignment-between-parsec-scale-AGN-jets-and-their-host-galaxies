@@ -172,7 +172,7 @@ def generate_sampled_catalogues(size, SDSS_catalogue, KIDS_catalogue):
     KIDS_sampled_catalogue.write('data/KIDS_sampled_catalogue.csv', delimiter=',', format='ascii') 
 
 
-def perform_xmatch(Astrogeo_good, catalogue, catalogue_name, catalogue_RA_name, catalogue_DEC_name):
+def perform_xmatch(Astrogeo_catalogue, catalogue, catalogue_name, catalogue_RA_name, catalogue_DEC_name):
     """
     Performs a cross-match between the Astrogeo catalogue and a given external catalogue.
 

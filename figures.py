@@ -7,6 +7,8 @@ import main_functions
 import numpy as np
 import matplotlib.pyplot as plt
 
+cm = 1/2.54  # centimeters in inches
+
 def Figure_2(data):
     """
     Create a Mollweide projection plot displaying the spatial distribution of different
@@ -57,22 +59,23 @@ def Figure_2(data):
     KIDS_RA, KIDS_DEC = aux_functions.process_coordinates(KIDS_RA, KIDS_DEC)
     
     # Plotting
+    plt.figure(figsize=(18*cm,12*cm))
     plt.subplot(111, projection='mollweide')
     
-    plt.scatter(Skymapper_RA, Skymapper_DEC, c='navajowhite', s=17, marker='s', alpha=0.5, label='SkyMapper')
-    plt.scatter(DESI_RA, DESI_DEC, c='salmon', s=17, marker='s', alpha=0.5, label='DESI LS')
-    plt.scatter(SDSS_RA, SDSS_DEC, c='red', s=17, marker='s', alpha=0.5, label='SDSS')
-    plt.scatter(DES_RA, DES_DEC, c='darkorange', s=17, marker='s', alpha=0.5, label='DES')
-    plt.scatter(KIDS_RA, KIDS_DEC, c='maroon', s=17, marker='s', alpha=0.5, label='KiDS')
-    plt.scatter(Astrogeo_RA, Astrogeo_DEC, c='cyan', s=1, marker='.', alpha=1, label='VLBI')
+    plt.scatter(Skymapper_RA, Skymapper_DEC, c='navajowhite', s=17*cm, marker='s', alpha=0.5, label='SkyMapper')
+    plt.scatter(DESI_RA, DESI_DEC, c='salmon', s=17*cm, marker='s', alpha=0.5, label='DESI LS')
+    plt.scatter(SDSS_RA, SDSS_DEC, c='red', s=17*cm, marker='s', alpha=0.5, label='SDSS')
+    plt.scatter(DES_RA, DES_DEC, c='darkorange', s=17*cm, marker='s', alpha=0.5, label='DES')
+    plt.scatter(KIDS_RA, KIDS_DEC, c='maroon', s=17*cm, marker='s', alpha=0.5, label='KiDS')
+    plt.scatter(Astrogeo_RA, Astrogeo_DEC, c='cyan', s=1*cm, marker='.', alpha=1, label='VLBI')
     
     lgnd = plt.legend(bbox_to_anchor=(0.85, 1.3), ncol=3, frameon=False)
     for lh in lgnd.legendHandles:
-        lh._sizes = [30]  
+        lh._sizes = [30*cm]  
         lh.set_alpha(1)
     
-    plt.xlabel(r'RA ($^{{\circ}}$)')
-    plt.ylabel(r'DEC ($^{{\circ}}$)')
+    plt.xlabel(r'RA ($^{{\circ}}$)',fontsize=10)
+    plt.ylabel(r'DEC ($^{{\circ}}$)',fontsize=10)
     plt.grid(True)
     
     plt.savefig('paper_figures/Figure_2.pdf', dpi=300, bbox_inches='tight')
@@ -175,7 +178,7 @@ def Figure_4(data):
     
     star_Spins = np.array([star_Spin_X, star_Spin_Y, star_Spin_Z]).T
 
-    fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(15, 10))
+    fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(18*cm, 18*cm))
 
     print('Computing with original data...')
     
@@ -195,9 +198,8 @@ def Figure_4(data):
     
     ax1.hist(delta_PA, bins=bins_array)
     ax1.set_xlabel(r'$\Delta$PA ($^{{\circ}}$)')
-    ax1.text(0.5,-0.2, "(a)", size=12, ha="center", transform=ax1.transAxes)
-    ax1.set_title(r'Eagle simulation elliptical galaxies with no scatter')
-    ax1.text(0.5, -0.2, "(a)", size=12, ha="center", transform=ax1.transAxes)
+    ax1.text(0.5,-0.3, "(a)", size=8, ha="center", transform=ax1.transAxes)
+    ax1.set_title(r'Eagle simulation elliptical galaxies with no scatter',fontsize=6)
 
     print('Computing with uniform spin orientations...')
     
@@ -226,10 +228,10 @@ def Figure_4(data):
 
     # Plot histogram for uniform spin orientations
     ax2.bar(bins_array[:-1], counts_avg, bins_array[1] - bins_array[0], align='edge')
-    ax2.errorbar(bins_center, counts_avg, yerr=counts_std, fmt='None', capsize=5, ecolor='k')
+    ax2.errorbar(bins_center, counts_avg, yerr=counts_std, fmt='None', elinewidth=1, capsize=5, ecolor='k')
     ax2.set_xlabel(r'$\Delta$PA ($^{{\circ}}$)')
-    ax2.text(0.5,-0.2, "(b)", size=12, ha="center", transform=ax2.transAxes)
-    ax2.set_title(r'Eagle simulation elliptical galaxies with uniform spin orientations')
+    ax2.text(0.5,-0.3, "(b)", size=8, ha="center", transform=ax2.transAxes)
+    ax2.set_title(r'Eagle simulation elliptical galaxies with uniform spin orientations',fontsize=6)
     ax2.set_ylim([0,225])
 
     epsilon = 0.33
@@ -272,10 +274,10 @@ def Figure_4(data):
 
     # Plot histogram for Gaussian scatter
     ax3.bar(bins_array[:-1], counts_avg, bins_array[1] - bins_array[0], align='edge')
-    ax3.errorbar(bins_center, counts_avg, yerr=counts_std, fmt='None', capsize=5, ecolor='k')
+    ax3.errorbar(bins_center, counts_avg, yerr=counts_std, elinewidth=1, fmt='None', capsize=5, ecolor='k')
     ax3.set_xlabel(r'$\Delta$PA ($^{{\circ}}$)')
-    ax3.text(0.5,-0.2, "(c)", size=12, ha="center", transform=ax3.transAxes)
-    ax3.set_title(r'Eagle simulation elliptical galaxies with gaussian scatter with $\epsilon$ = {}'.format(epsilon))
+    ax3.text(0.5,-0.3, "(c)", size=8, ha="center", transform=ax3.transAxes)
+    ax3.set_title(r'Eagle simulation elliptical galaxies with gaussian scatter with $\epsilon$ = {}'.format(epsilon), fontsize=6)
 
     epsilon = 0.33
     print(f'Computing with uniform scatter with epsilon = {epsilon}...')
@@ -317,13 +319,13 @@ def Figure_4(data):
 
     # Plot histogram for uniform scatter
     ax4.bar(bins_array[:-1], counts_avg, bins_array[1] - bins_array[0], align='edge')
-    ax4.errorbar(bins_center, counts_avg, yerr=counts_std, fmt='None', capsize=5, ecolor='k', label='Counts +/- SD of bin height')
+    ax4.errorbar(bins_center, counts_avg, yerr=counts_std, fmt='None', elinewidth=1, capsize=5, ecolor='k', label='Counts +/- SD of bin height')
     ax4.set_xlabel(r'$\Delta$PA ($^{{\circ}}$)')
-    ax4.text(0.5,-0.2, "(d)", size=12, ha="center", transform=ax4.transAxes)
-    ax4.set_title(r'Eagle simulation elliptical galaxies with uniform scatter with $\epsilon$ = {}'.format(epsilon))
+    ax4.text(0.5,-0.3, "(d)", size=8, ha="center", transform=ax4.transAxes)
+    ax4.set_title(r'Eagle simulation elliptical galaxies with uniform scatter with $\epsilon$ = {}'.format(epsilon),fontsize=6)
 
     # Adjust layout and save figure
-    fig.legend(bbox_to_anchor=(0.9, 1.0), frameon=False, borderaxespad=0., fontsize=15, bbox_transform=fig.transFigure)
+    fig.legend(bbox_to_anchor=(0.9, 1.), frameon=False, borderaxespad=0., fontsize=15*cm, bbox_transform=fig.transFigure)
     plt.subplots_adjust(hspace=0.4)
     plt.savefig('paper_figures/Figure_4.pdf', dpi=100, bbox_inches='tight')
     plt.show()
@@ -345,21 +347,22 @@ def Supplementary_Figure_1(data):
     pa = np.array(data.pa)
     
     # Create histogram plot
-    plt.figure(figsize=(8, 6))
+    plt.figure(figsize=(8*cm, 6*cm))
     plt.hist(pa, histtype='step', fill=True, linewidth=3, alpha=0.2, bins=11)
     
     # Set labels and title
-    plt.xlabel(r'PA ($^{\circ}$)', fontsize=15)
-    plt.ylabel('Counts', fontsize=15)
-    plt.title('VLBI Jets', fontsize=20)
+    plt.xlabel(r'PA ($^{\circ}$)', fontsize=5)
+    plt.ylabel('Counts', fontsize=5)
+    plt.title('VLBI Jets', fontsize=20*cm)
     
     # Customize tick parameters
-    plt.tick_params(axis='both', which='major', labelsize=15)
+    plt.tick_params(axis='both', which='major', labelsize=15*cm)
     
     # Adjust layout
     plt.gcf().subplots_adjust(bottom=0.15)
     
     # Save and show plot
+    plt.tight_layout()
     plt.savefig('paper_figures/Supplementary_Figure_1.pdf', dpi=200)
     plt.show()
     
@@ -389,23 +392,23 @@ def Supplementary_Figure_2(data):
     Skymapper_angles[Skymapper_angles > 90] -= 180
     
     # Create subplots
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 5))
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16*cm, 6*cm))
     
     # Plot DESI histogram
-    ax1.hist(DESI_angles, histtype='step', fill=True, linewidth=3, alpha=0.2, bins=11)
-    ax1.set_xlabel(r'PA ($^{\circ}$)', fontsize=15)
-    ax1.set_ylabel('Counts', fontsize=15)
-    ax1.tick_params(axis='both', which='major', labelsize=15)
-    ax1.text(0.5, -0.2, "(a)", size=12, ha="center", transform=ax1.transAxes)
-    ax1.set_title('DESI LS optical cross-matches')
+    ax1.hist(DESI_angles, histtype='step', fill=True, linewidth=3*cm, alpha=0.2, bins=11)
+    ax1.set_xlabel(r'PA ($^{\circ}$)', fontsize=15*cm)
+    ax1.set_ylabel('Counts', fontsize=15*cm)
+    ax1.tick_params(axis='both', which='major', labelsize=15*cm)
+    ax1.text(0.5, -0.3, "(a)", size=6, ha="center", transform=ax1.transAxes)
+    ax1.set_title('DESI LS optical cross-matches',fontsize=6)
     
     # Plot SkyMapper histogram
-    ax2.hist(Skymapper_angles, histtype='step', fill=True, linewidth=3, alpha=0.2, bins=11)
-    ax2.set_xlabel(r'PA ($^{\circ}$)', fontsize=15)
-    ax2.set_ylabel('Counts', fontsize=15)
-    ax2.tick_params(axis='both', which='major', labelsize=15)
-    ax2.text(0.5, -0.2, "(b)", size=12, ha="center", transform=ax2.transAxes)
-    ax2.set_title('SkyMapper optical cross-matches')
+    ax2.hist(Skymapper_angles, histtype='step', fill=True, linewidth=3*cm, alpha=0.2, bins=11)
+    ax2.set_xlabel(r'PA ($^{\circ}$)', fontsize=15*cm)
+    ax2.set_ylabel('Counts', fontsize=15*cm)
+    ax2.tick_params(axis='both', which='major', labelsize=15*cm)
+    ax2.text(0.5, -0.3, "(b)", size=12*cm, ha="center", transform=ax2.transAxes)
+    ax2.set_title('SkyMapper optical cross-matches',fontsize=6)
     
     # Adjust layout
     plt.gcf().subplots_adjust(bottom=0.15)
@@ -643,7 +646,7 @@ def Supplementary_Figure_6(data):
 
 def Supplementary_Figure_7(data):
     """
-    Generate and save histograms comparing position angles for DESI data with various cuts applied.
+    Generate and save histograms comparing position angles for DESI data with 10 bins and various cuts applied.
 
     Parameters:
     ----------
@@ -699,7 +702,7 @@ def Supplementary_Figure_7(data):
 
 def Supplementary_Figure_8(data):
     """
-    Generate and save histogram plots comparing position angles (PA) between DESI VLBI and optical data.
+    Generate and save histogram plots comparing position angles (PA) between DESI VLBI and optical data, for various magnitude cuts.
 
     Parameters:
     ----------
@@ -827,7 +830,7 @@ def Supplementary_Figure_9(data):
     yerrors = np.array([median_bins - lower_pctl_bins, upp_pctl_bins - median_bins])
 
     # Create plot
-    fig, ax1 = plt.subplots()
+    fig, ax1 = plt.subplots(figsize=(16*cm,10*cm))
 
     # Plot histogram
     ax1.hist(x, bins=n_bins, alpha=0.2)
@@ -838,9 +841,9 @@ def Supplementary_Figure_9(data):
     # Create twin axis for error bar plot
     ax2 = ax1.twinx()
     ax2 = plt.gca()
-    plt.errorbar(bin_centers, median_bins, yerr=yerrors, xerr=None, fmt='None', elinewidth=1, capsize=3, ecolor='k', alpha=0.5, label='68% confidence interval')
-    ax2.scatter(bin_centers, mean_bins, s=7, c='b', label='mean')
-    ax2.scatter(bin_centers, median_bins, s=7, c='r', label='median')
+    plt.errorbar(bin_centers, median_bins, yerr=yerrors, xerr=None, fmt='None', elinewidth=1*cm, capsize=3*cm, ecolor='k', alpha=0.5, label='68% confidence interval')
+    ax2.scatter(bin_centers, mean_bins, s=7*cm, c='b', label='mean')
+    ax2.scatter(bin_centers, median_bins, s=7*cm, c='r', label='median')
     ax2.set_ylim([0, 90])
     ax2.axhline(y=45, ls='--', color='k', alpha=0.5)
     ax2.set_ylabel(r'$\Delta$PA ($^{{\circ}}$)')
@@ -887,7 +890,7 @@ def Supplementary_Figure_10(data):
     z_cut = DESI_SOURCE_Z < z_bound
 
     # Create subplots
-    fig, axes = plt.subplots(2, 2, figsize=(10, 10))
+    fig, axes = plt.subplots(2, 2, figsize=(16*cm, 16*cm))
 
     # Plot 1: Scatter plot of original and modulated PA for all cases
     x_original = DESI_VLBI_PA[b_cut & err_cut]
@@ -900,17 +903,17 @@ def Supplementary_Figure_10(data):
     ax1 = plt.subplot(221)
     ax1.set_xlim([-180, 180])
     ax1.set_ylim([-270, 270])
-    ax1.scatter(x_mod, y_mod, c='b', s=0.1)
-    ax1.errorbar(x_mod, y_mod, xerr=x_err, yerr=y_err, fmt='None', ecolor='k', elinewidth=0.5)
-    ax1.axvline(x=0, color='k', lw=0.5)
-    ax1.axhline(y=0, color='k', lw=0.5)
+    ax1.scatter(x_mod, y_mod, c='b', s=0.1*cm)
+    ax1.errorbar(x_mod, y_mod, xerr=x_err, yerr=y_err, fmt='None', ecolor='k', elinewidth=0.5*cm)
+    ax1.axvline(x=0, color='k', lw=0.5*cm)
+    ax1.axhline(y=0, color='k', lw=0.5*cm)
     ax1.plot([-270, 270], [-270, 270], 'k--', lw=2)
     ax1.set_aspect(1)
     ax1.set_facecolor('white')
     ax1.set_xlabel(r'Jet PA ($^{{\circ}}$)')
     ax1.set_ylabel(r'Closest Optical minor axis PA ($^{{\circ}}$)')
     ax1.set_title('All cases')
-    ax1.text(0.5, -0.2, 'a)', size=15, ha="center", transform=ax1.transAxes)
+    ax1.text(0.5, -0.3, 'a)', size=8, ha="center", transform=ax1.transAxes)
 
     # Plot 2: Histogram of differences for all cases
     ax2 = plt.subplot(222)
@@ -919,7 +922,7 @@ def Supplementary_Figure_10(data):
     ax2.yaxis.tick_right()
     ax2.yaxis.set_label_position("right")
     ax2.set_title('All cases')
-    ax2.text(0.5, -0.2, 'b)', size=15, ha="center", transform=ax2.transAxes)
+    ax2.text(0.5, -0.3, 'b)', size=8, ha="center", transform=ax2.transAxes)
 
     # Plot 3: Scatter plot of original and modulated PA for good cases with z < z_bound
     x_original = DESI_VLBI_PA[DESI_good_cases_cut & z_cut & b_cut]
@@ -932,17 +935,17 @@ def Supplementary_Figure_10(data):
     ax3 = plt.subplot(223, sharex=ax1)
     ax3.set_xlim([-180, 180])
     ax3.set_ylim([-270, 270])
-    ax3.scatter(x_mod, y_mod, c='b', s=1)
-    ax3.errorbar(x_mod, y_mod, xerr=x_err, yerr=y_err, fmt='None', ecolor='k', elinewidth=0.5, label='PA err.')
-    ax3.axvline(x=0, color='k', lw=0.5)
-    ax3.axhline(y=0, color='k', lw=0.5)
+    ax3.scatter(x_mod, y_mod, c='b', s=1*cm)
+    ax3.errorbar(x_mod, y_mod, xerr=x_err, yerr=y_err, fmt='None', ecolor='k', elinewidth=0.5*cm, label='PA err.')
+    ax3.axvline(x=0, color='k', lw=0.5*cm)
+    ax3.axhline(y=0, color='k', lw=0.5*cm)
     ax3.plot([-270, 270], [-270, 270], 'k--', lw=2)
     ax3.set_aspect(1)
     ax3.set_facecolor('white')
     ax3.set_xlabel(r'Jet PA ($^{{\circ}}$)')
     ax3.set_ylabel(r'Closest Optical minor axis PA ($^{{\circ}}$)')
     ax3.set_title('Good cases, z < {}'.format(z_bound))
-    ax3.text(0.5, -0.2, 'c)', size=15, ha="center", transform=ax3.transAxes)
+    ax3.text(0.5, -0.3, 'c)', size=8, ha="center", transform=ax3.transAxes)
 
     # Plot 4: Histogram of differences for good cases with z < z_bound
     ax4 = plt.subplot(224)
@@ -951,14 +954,14 @@ def Supplementary_Figure_10(data):
     ax4.yaxis.tick_right()
     ax4.yaxis.set_label_position("right")
     ax4.set_title('Good cases, z < {}'.format(z_bound))
-    ax4.text(0.5, -0.2, 'd)', size=15, ha="center", transform=ax4.transAxes)
+    ax4.text(0.5, -0.3, 'd)', size=8, ha="center", transform=ax4.transAxes)
 
     # Add lines to the figure
-    line1 = plt.Line2D([0.38, 0.45], [0.92, 0.91], color='k', linewidth=2, transform=fig.transFigure)
-    line2 = plt.Line2D([0.38, 0.45], [0.86, 0.59], color='k', linewidth=2, transform=fig.transFigure)
-    line3 = plt.Line2D([0.38, 0.45], [0.44, 0.435], color='k', linewidth=2, transform=fig.transFigure)
-    line4 = plt.Line2D([0.38, 0.45], [0.39, 0.12], color='k', linewidth=2, transform=fig.transFigure)
-  
+    line1 = plt.Line2D([0.385,0.465], [0.88, 0.875], color='k', linewidth=2*cm, transform=fig.transFigure)
+    line2 = plt.Line2D([0.385,0.465], [0.84, 0.61], color='k', linewidth=2*cm, transform=fig.transFigure)
+    line3 = plt.Line2D([0.385,0.465], [0.415, 0.41], color='k', linewidth=2*cm, transform=fig.transFigure)
+    line4 = plt.Line2D([0.385,0.465], [0.375, 0.145], color='k', linewidth=2*cm, transform=fig.transFigure)
+ 
     
     fig.add_artist(line1)
     fig.add_artist(line2)
@@ -966,7 +969,7 @@ def Supplementary_Figure_10(data):
     fig.add_artist(line4)
     
     # Adjust layout and save figure
-    fig.legend(bbox_to_anchor=(0.8, 0.98), frameon=False, borderaxespad=0., fontsize=10, bbox_transform=fig.transFigure)
+    fig.legend(bbox_to_anchor=(0.8, 0.98), frameon=False, borderaxespad=0., fontsize=8, bbox_transform=fig.transFigure)
 
     # Adjust layout and save figure
     plt.subplots_adjust(wspace=0.1, hspace=0.2)
@@ -1017,23 +1020,23 @@ def Supplementary_Figure_11(data):
     rho = r[0, 1]
 
     # Create subplots
-    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 10), sharex=True, layout='constrained')
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(18*cm, 18*cm), sharex=True, layout='constrained')
 
     # Plot 1: Histogram of position angle differences
     counts, bins, _ = ax1.hist(x, bins=np.linspace(0, 90, 6), histtype='step', fill=True,
-                              color='lightcoral', edgecolor='lightcoral', linewidth=3, alpha=0.5)
+                              color='lightcoral', edgecolor='lightcoral', linewidth=3*cm, alpha=0.5)
     for tk in ax1.get_xticklabels():
         tk.set_visible(False)
     ax1.set_xlim([0, 1.2 * np.max(counts)])
     ax1.set_ylabel('Counts per bin')
 
     # Plot 2: Scatter plot and 2D histogram of position angle differences vs. VLBI PA
-    ax2.scatter(x, y, c='b', s=3)
+    ax2.scatter(x, y, c='b', s=3*cm)
     _, _, _, im = ax2.hist2d(x, y, bins=[np.linspace(0, 90, 6), np.linspace(-180, 180, 2)],
                              cmap='Blues', vmin=0)
-    ax2.errorbar(x, y, xerr=x_err, yerr=y_err, fmt='None', ecolor='k', elinewidth=0.5, label='PA err.')
-    ax2.axvline(x=0, color='k', lw=0.5)
-    ax2.axhline(y=0, color='k', lw=0.5)
+    ax2.errorbar(x, y, xerr=x_err, yerr=y_err, fmt='None', ecolor='k', elinewidth=0.5*cm, label='PA err.')
+    ax2.axvline(x=0, color='k', lw=0.5*cm)
+    ax2.axhline(y=0, color='k', lw=0.5*cm)
     ax2.set_ylabel('Counts per bin')
     for tk in ax2.get_xticklabels():
         tk.set_visible(True)
@@ -1045,7 +1048,7 @@ def Supplementary_Figure_11(data):
     ax2.set_ylabel(r'Jet PA ($^{{\circ}}$)')
     ax2.set_xlabel(r'$\Delta$PA ($^{{\circ}}$)')
     
-    fig.legend(bbox_to_anchor=(0.8, 1.), frameon=False, borderaxespad=0., fontsize=10, bbox_transform=fig.transFigure)
+    fig.legend(bbox_to_anchor=(0.8, 1.), frameon=False, borderaxespad=0., fontsize=8, bbox_transform=fig.transFigure)
     
     # Add overall title and save figure
     fig.suptitle(r'DESI good cases, z < {}'.format(z_bound))

@@ -124,9 +124,10 @@ def make_combined_data(data,Good):
     if Good:
         i_SDSS_good = (np.array(SDSS_xmatches.type_r) == 3) & (np.array(SDSS_xmatches.modelAB_r)*np.array(SDSS_xmatches.devrad_r) > b_filter)
         i_DESI_good = np.in1d(np.array(DESI_xmatches.TYPE),['SER','EXP','DEV']) & (np.array(DESI_xmatches.b_axis) > b_filter)
-        i_skymapper_good = (np.array(Skymapper_xmatches.ClassStar) < stellar_index_filter) & (0.5*np.array(Skymapper_xmatches.b) > b_filter) 
-        i_KIDS_good = (np.array(KIDS_xmatches.CLASS_STAR) < stellar_index_filter) & (0.2*np.array(KIDS_xmatches.B_IMAGE) > b_filter)
+        i_skymapper_good = (np.array(Skymapper_xmatches.ClassStar) < stellar_index_filter) & (0.5*np.array(Skymapper_xmatches.b) > 2.) & (0.5*np.array(Skymapper_xmatches.b) > b_filter) 
+        i_KIDS_good = (np.array(KIDS_xmatches.CLASS_STAR) < stellar_index_filter) & (0.2*np.array(KIDS_xmatches.B_IMAGE) > 2.) & (0.2*np.array(KIDS_xmatches.B_IMAGE) > b_filter)
         i_DES_good = np.in1d(np.array(DES_xmatches.DES_full_catalogue_Astrogeo_EXTENDED_CLASS_COADD_matches),[2,3]) & (0.26*np.array(DES_xmatches.DES_full_catalogue_Astrogeo_B_matches) > b_filter)
+        print(np.where(i_DESI_good)[0])
    
 
         SDSS_filter = i_SDSS_good 
@@ -463,12 +464,12 @@ def make_combined_data(data,Good):
     }
 
     Surveys_Data = pd.DataFrame(data)
-    if Good:
-        Z_Surveys_Good_Data = np.array(Astrogeo_catalogue.Z)
-        Z_Surveys_Good_Data[np.isnan(Surveys_Data.Weighted_average_Jet_Minor_diffs)] = np.nan
-        Z = Z_Surveys_Good_Data
-    else:
-        Z = np.array(Astrogeo_catalogue.Z) 
+    #if Good:
+    #   Z_Surveys_Good_Data = np.array(Astrogeo_catalogue.Z)
+    #   Z_Surveys_Good_Data[np.isnan(Surveys_Data.Weighted_average_Jet_Minor_diffs)] = np.nan
+    #   Z = Z_Surveys_Good_Data
+    #else:
+    Z = np.array(Astrogeo_catalogue.Z) 
     
     Surveys_Data['Z'] = Z
     return Surveys_Data
@@ -716,7 +717,12 @@ def Histograms_plots(data_array, data_err_array, max_tol_Z_array, Survey_Name, P
     """
     
     # Create subplots with specified size and layout
-    fig, axes = plt.subplots(n_rows, 3, sharex=True, figsize=(30, 30))
+    
+
+
+
+    cm = 1/2.54  # centimeters in inches
+    fig, axes = plt.subplots(n_rows, 3, sharex=True, figsize=(16*cm, 12*cm))
     
     # Define labels and titles for the plots
     pad = 0
@@ -727,13 +733,13 @@ def Histograms_plots(data_array, data_err_array, max_tol_Z_array, Survey_Name, P
     for ax, col in zip(axes[0], cols):
         ax.annotate(col, xy=(0.5, 1.1), xytext=(0, pad),
                     xycoords='axes fraction', textcoords='offset points',
-                    fontsize=30, ha='center', va='baseline')
+                    fontsize=6, ha='center', va='baseline')
     
     # Annotate row headers
     for ax, row in zip(axes[:, 2], rows):
         ax.annotate(row, xy=(1.1, 0.5), xytext=(0, pad),
                     xycoords='axes fraction', textcoords='offset points',
-                    fontsize=30, ha='right', va='center', rotation=90)
+                    fontsize=6, ha='right', va='center', rotation=90)
     
     # Initialize arrays for p-values
     p_values_blue_5_bins = np.zeros((n_rows, 3))
@@ -743,7 +749,7 @@ def Histograms_plots(data_array, data_err_array, max_tol_Z_array, Survey_Name, P
     
     # Define plot labels and separation
     labels = np.array([['a)', 'b)', 'c)'], ['d)', 'e)', 'f)'], ['g)', 'h)', 'i)'], ['j)', 'k)', 'l)']])
-    label_seps = np.array([[-0.1, -0.1, -0.1], [-0.1, -0.1, -0.1], [-0.1, -0.1, -0.1], [-0.3, -0.3, -0.3]])
+    label_seps = np.array([[-0.1, -0.1, -0.1], [-0.1, -0.1, -0.1], [-0.1, -0.1, -0.1], [-0.5, -0.5, -0.5]])
     
     percentage = 0
     for i in range(n_rows):
@@ -816,21 +822,21 @@ def Histograms_plots(data_array, data_err_array, max_tol_Z_array, Survey_Name, P
             max_value_error = Y_errs_fig[0][max_pos]
             
             # Plot histogram and fit results
-            axes[i, j].text(0.1, 0.05, string_5_bins, fontsize=30, transform=axes[i, j].transAxes, color='white')
-            axes[i, j].text(0.5, 0.05, string_2_bins, fontsize=30, transform=axes[i, j].transAxes, color='white')
-            axes[i, j].hist(data_array[i, j], bins=Bins_array_fig, histtype='step', fill=True, color='dodgerblue', edgecolor='dodgerblue', linewidth=3, alpha=0.7)
-            axes[i, j].hist(data_array[i, j], bins=bin_2_Bins_array_fig, histtype='step', fill=True, color='lightcoral', edgecolor='lightcoral', linewidth=3, alpha=0.5)
+            axes[i, j].text(0.1, 0.05, string_5_bins, fontsize=6, transform=axes[i, j].transAxes, color='white')
+            axes[i, j].text(0.5, 0.05, string_2_bins, fontsize=6, transform=axes[i, j].transAxes, color='white')
+            axes[i, j].hist(data_array[i, j], bins=Bins_array_fig, histtype='step', fill=True, color='dodgerblue', edgecolor='dodgerblue', linewidth=0.6, alpha=0.7)
+            axes[i, j].hist(data_array[i, j], bins=bin_2_Bins_array_fig, histtype='step', fill=True, color='lightcoral', edgecolor='lightcoral', linewidth=0.6, alpha=0.5)
             if (i == n_rows - 1) & (j == 2):
-                axes[i, j].errorbar(Bins_centers_fig, Original_counts_fig, yerr=Y_errs_fig, xerr=None, fmt='None', capsize=5, ecolor='k', elinewidth=2, label='Counts +/- SD of bin height')
+                axes[i, j].errorbar(Bins_centers_fig, Original_counts_fig, yerr=Y_errs_fig, xerr=None, fmt='None', capsize=2, ecolor='k', elinewidth=0.1, markeredgewidth=0.1,  label='Counts +/- SD of bin height')
             else:
-                axes[i, j].errorbar(Bins_centers_fig, Original_counts_fig, yerr=Y_errs_fig, xerr=None, fmt='None', capsize=5, ecolor='k', elinewidth=2)
-            axes[i, j].errorbar(bin_2_Bins_centers_fig, bin_2_Original_counts_fig, yerr=bin_2_Y_errs_fig, xerr=None, fmt='None', capsize=5, ecolor='k', elinewidth=2)
+                axes[i, j].errorbar(Bins_centers_fig, Original_counts_fig, yerr=Y_errs_fig, xerr=None, fmt='None', capsize=2, ecolor='k', elinewidth=0.1, markeredgewidth=0.1)
+            axes[i, j].errorbar(bin_2_Bins_centers_fig, bin_2_Original_counts_fig, yerr=bin_2_Y_errs_fig, xerr=None, fmt='None', capsize=2, ecolor='k', elinewidth=0.1, markeredgewidth=0.1)
             axes[i, j].fill_between(fill_x, fill_y - fill_err, fill_y + fill_err, alpha=0.8, color='midnightblue', step='post')
             if (i == n_rows - 1) & (j == 2):
                 axes[i, j].fill_between(bin_2_fill_x, bin_2_fill_y - bin_2_fill_err, bin_2_fill_y + bin_2_fill_err, alpha=0.5, color='darkred', step='post', label='Mean +/- SD of null signal')
             else:
                 axes[i, j].fill_between(bin_2_fill_x, bin_2_fill_y - bin_2_fill_err, bin_2_fill_y + bin_2_fill_err, alpha=0.5, color='darkred', step='post')
-            axes[i, j].text(0.5, label_seps[i, j], labels[i, j], size=25, ha="center", transform=axes[i, j].transAxes)
+            axes[i, j].text(0.5, label_seps[i, j], labels[i, j], size=5, ha="center", transform=axes[i, j].transAxes)
             
             # Perform Kolmogorov-Smirnov test
             kstest_res_fig = kstest(data_array[i, j][np.isnan(data_array[i, j]) == False], 'uniform', args=(0, 90))
@@ -841,25 +847,25 @@ def Histograms_plots(data_array, data_err_array, max_tol_Z_array, Survey_Name, P
             else: 
                 kstest_label = r'$p_{{ks}}$ = {:.2f}'.format(kstest_res_fig.pvalue)
             
-            axes[i, j].text(0.25, 0.2, r'$p_{{ks}}$ = {:.3f}'.format(kstest_res_fig.pvalue), fontsize=30, transform=axes[i, j].transAxes, color='white')
+            axes[i, j].text(0.25, 0.2, r'$p_{{ks}}$ = {:.3f}'.format(kstest_res_fig.pvalue), fontsize=6, transform=axes[i, j].transAxes, color='white')
             
             # Adjust y-axis limits and add text for sample size
             top_ylim = axes[i, j].get_ylim()[1]
             axes[i, j].set_ylim([0, top_ylim * 1.1])
-            axes[i, j].text(0.4, 0.9, 'N = {}'.format(len(data_array[i, j][np.isnan(data_array[i, j]) == False])), fontsize=30, transform=axes[i, j].transAxes, color='black')
+            axes[i, j].text(0.4, 0.9, 'N = {}'.format(len(data_array[i, j][np.isnan(data_array[i, j]) == False])), fontsize=6, transform=axes[i, j].transAxes, color='black')
             
             # Set x-axis label and tick parameters for the last row
             if i == n_rows - 1:
-                axes[i, j].set_xlabel(r'$\Delta$PA ($^{{\circ}}$)', fontsize=30)
-            axes[i, j].tick_params(axis='both', which='major', labelsize=30)
+                axes[i, j].set_xlabel(r'$\Delta$PA ($^{{\circ}}$)', fontsize=6)
+            axes[i, j].tick_params(axis='both', which='major', labelsize=6)
             
             percentage += 1. / (n_rows * 3)
             print('{:.0f}'.format(100 * percentage) + '%', end='\r')
     
     # Add legend and save the figure
     p_values_blue_2_bins = np.zeros((4, 3))
-    fig.legend(bbox_to_anchor=(0.85, 1.0), frameon=False, borderaxespad=0., labelspacing=1.5, bbox_transform=fig.transFigure, fontsize=25)
-    fig.suptitle(Survey_Name, fontsize=50)
+    fig.legend(bbox_to_anchor=(0.85, 1.0), frameon=False, borderaxespad=0., labelspacing=1.5, bbox_transform=fig.transFigure, fontsize=5)
+    fig.suptitle(Survey_Name, fontsize=10)
     plt.subplots_adjust(top=0.9)
     plt.savefig('paper_figures/' + Png_Name, dpi=100, bbox_inches='tight', pad_inches=0)
     plt.show()
