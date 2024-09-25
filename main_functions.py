@@ -127,7 +127,6 @@ def make_combined_data(data,Good):
         i_skymapper_good = (np.array(Skymapper_xmatches.ClassStar) < stellar_index_filter) & (0.5*np.array(Skymapper_xmatches.b) > 2.) & (0.5*np.array(Skymapper_xmatches.b) > b_filter) 
         i_KIDS_good = (np.array(KIDS_xmatches.CLASS_STAR) < stellar_index_filter) & (0.2*np.array(KIDS_xmatches.B_IMAGE) > 2.) & (0.2*np.array(KIDS_xmatches.B_IMAGE) > b_filter)
         i_DES_good = np.in1d(np.array(DES_xmatches.DES_full_catalogue_Astrogeo_EXTENDED_CLASS_COADD_matches),[2,3]) & (0.26*np.array(DES_xmatches.DES_full_catalogue_Astrogeo_B_matches) > b_filter)
-        print(np.where(i_DESI_good)[0])
    
 
         SDSS_filter = i_SDSS_good 
@@ -157,7 +156,7 @@ def make_combined_data(data,Good):
         
         
         #With SDSS
-        SDSS_index = np.where(np.array(Astrogeo_SDSS.index)[SDSS_filter] == i)[0]
+        SDSS_index = np.where(np.array(Astrogeo_SDSS.Index)[SDSS_filter] == i)[0]
         if len(SDSS_index) == 1:
             temporal_survey_names.append('SDSS')
             temporal_survey_present += 2**4
@@ -197,7 +196,7 @@ def make_combined_data(data,Good):
             SDSS_BA_errors[i] = np.nan
 
         #With DESI
-        DESI_index = np.where(np.array(Astrogeo_DESI.index)[DESI_filter] == i)[0]
+        DESI_index = np.where(np.array(Astrogeo_DESI.Index)[DESI_filter] == i)[0]
         if len(DESI_index) == 1:
             temporal_survey_names.append('DESI')
             temporal_survey_present += 2**3
@@ -239,7 +238,7 @@ def make_combined_data(data,Good):
             DESI_BA_errors[i] = np.nan
 
         #With Skymapper
-        skymapper_index = np.where(np.array(Astrogeo_Skymapper.index)[skymapper_filter] == i)[0] 
+        skymapper_index = np.where(np.array(Astrogeo_Skymapper.Index)[skymapper_filter] == i)[0] 
         if len(skymapper_index) == 1:
             temporal_survey_names.append('Skymapper')
             temporal_survey_present += 2**2
@@ -284,7 +283,7 @@ def make_combined_data(data,Good):
             skymapper_TYPE[i] = np.nan
 
         #With KIDS
-        KIDS_index = np.where(np.array(Astrogeo_KIDS.index)[KIDS_filter] == i)[0] 
+        KIDS_index = np.where(np.array(Astrogeo_KIDS.Index)[KIDS_filter] == i)[0] 
         if len(KIDS_index) == 1:
             temporal_survey_names.append('KIDS')
             temporal_survey_present += 2**1
@@ -333,7 +332,7 @@ def make_combined_data(data,Good):
             KIDS_BA_errors[i] = np.nan
 
         #With DES
-        DES_index = np.where(np.array(DES_xmatches.DES_full_catalogue_Astrogeo_matches_indexes)[DES_filter] == i)[0]
+        DES_index = np.where(np.array(DES_xmatches.Index)[DES_filter] == i)[0]
         if len(DES_index) == 1:
             temporal_survey_names.append('DES')
             temporal_survey_present += 2**0

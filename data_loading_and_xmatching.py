@@ -77,50 +77,50 @@ def load_catalogues(catalogue):
     if catalogue == 'DESI':
         # Loading the DESI catalogue from a CSV file
         print('Loading DESI...')
-        DESI_catalogue = pd.read_csv('data/DESI_catalogue.csv', header=0)
+        DESI_catalogue = pd.read_csv('Whole_survey_data/DESI_catalogue.csv', header=0)
         return DESI_catalogue
     
     if catalogue == 'SDSS':
         # Loading the SDSS catalogue from a CSV file
         print('Loading SDSS...')
-        SDSS_catalogue = pd.read_csv('data/SDSS_catalogue.csv', header=0)
+        SDSS_catalogue = pd.read_csv('Whole_survey_data/SDSS_catalogue.csv', header=0)
         return SDSS_catalogue
     
     if catalogue == 'DES':
         # Loading the DES catalogue from a CSV file
         print('Loading DES...')
-        DES_catalogue = pd.read_csv('data/DES_full_catalogue_Astrogeo.csv', header=0)
+        DES_catalogue = pd.read_csv('Whole_survey_data/DES_full_catalogue_Astrogeo.csv', header=0)
         return DES_catalogue
     
     if catalogue == 'Skymapper':
         # Loading the Skymapper catalogue from a CSV file
         print('Loading Skymapper...')
-        Skymapper_catalogue = pd.read_csv('data/Skymapper_catalogue.csv', header=0)
+        Skymapper_catalogue = pd.read_csv('Whole_survey_data/Skymapper_catalogue.csv', header=0)
         return Skymapper_catalogue
     
     if catalogue == 'KIDS':
         # Loading the KIDS catalogue from a FITS file
         print('Loading KIDS...')
-        with fits.open('data/KiDS_catalogue.fits', memmap=True) as KIDS_fits:
+        with fits.open('Whole_survey_data/KiDS_catalogue.fits', memmap=True) as KIDS_fits:
             KIDS_catalogue = KIDS_fits[1].data  # Access the data from the first extension
         return KIDS_catalogue
     
     if catalogue == 'All':
         # Loading all the catalogues and returning them as a tuple
         print('Loading DESI...')
-        DESI_catalogue = pd.read_csv('data/DESI_catalogue.csv', header=0)
+        DESI_catalogue = pd.read_csv('Whole_survey_data/DESI_catalogue.csv', header=0)
         
         print('Loading SDSS...')
-        SDSS_catalogue = pd.read_csv('data/SDSS_catalogue.csv', header=0)
+        SDSS_catalogue = pd.read_csv('Whole_survey_data/SDSS_catalogue.csv', header=0)
         
         print('Loading DES...')
-        DES_catalogue = pd.read_csv('data/DES_catalogue.csv', header=0)
+        DES_catalogue = pd.read_csv('Whole_survey_data/DES_catalogue.csv', header=0)
         
         print('Loading Skymapper...')
-        Skymapper_catalogue = pd.read_csv('data/Skymapper_catalogue.csv', header=0)
+        Skymapper_catalogue = pd.read_csv('Whole_survey_data/Skymapper_catalogue.csv', header=0)
         
         print('Loading KIDS...')
-        with fits.open('data/KiDS_catalogue.fits', memmap=True) as KIDS_fits:
+        with fits.open('Whole_survey_data/KiDS_catalogue.fits', memmap=True) as KIDS_fits:
             KIDS_catalogue = KIDS_fits[1].data
         
         # Return all loaded catalogues as a tuple
@@ -172,7 +172,7 @@ def generate_sampled_catalogues(size, SDSS_catalogue, KIDS_catalogue):
     KIDS_sampled_catalogue.write('data/KIDS_sampled_catalogue.csv', delimiter=',', format='ascii') 
 
 
-def perform_xmatch(Astrogeo_catalogue, catalogue, catalogue_name, catalogue_RA_name, catalogue_DEC_name):
+def perform_xmatch(Astrogeo_good_catalogue, catalogue, catalogue_name, catalogue_RA_name, catalogue_DEC_name):
     """
     Performs a cross-match between the Astrogeo catalogue and a given external catalogue.
 
@@ -194,8 +194,8 @@ def perform_xmatch(Astrogeo_catalogue, catalogue, catalogue_name, catalogue_RA_n
     print('Performing xmatch on ' + catalogue_name + '...')
     
     # Extract RA and DEC from the Astrogeo catalogue and convert to SkyCoord objects
-    Astrogeo_RA_good = np.array(Astrogeo_good.RA_deg)
-    Astrogeo_DEC_good = np.array(Astrogeo_good.DEC_deg)
+    Astrogeo_RA_good = np.array(Astrogeo_good_catalogue.RA_deg)
+    Astrogeo_DEC_good = np.array(Astrogeo_good_catalogue.DEC_deg)
     Astrogeo_coords_good = SkyCoord(Astrogeo_RA_good, Astrogeo_DEC_good, frame='icrs', unit='deg')
     
     # Extract RA and DEC from the external catalogue and convert to SkyCoord objects
@@ -213,16 +213,18 @@ def perform_xmatch(Astrogeo_catalogue, catalogue, catalogue_name, catalogue_RA_n
     sep_constraint = d2d < max_sep
     
     # Get the matched rows from the Astrogeo catalogue
-    Astrogeo_catalogue_matches = Astrogeo_good[sep_constraint]
+    Astrogeo_catalogue_matches = Astrogeo_good_catalogue[sep_constraint]
     
     # Get the matched rows from the external catalogue
     if catalogue_name == 'KIDS':
         catalogue_Astrogeo_matches = Table(catalogue[idx[sep_constraint]])
+        catalogue_Astrogeo_matches['Index'] = Astrogeo_catalogue_matches.index 
         catalogue_Astrogeo_matches.write('data/'+catalogue_name+'_xmatches'+'.csv', delimiter=',', format='ascii')
     else:
         catalogue_Astrogeo_matches = catalogue.iloc[idx[sep_constraint]]
-        catalogue_Astrogeo_matches.to_csv('data/'+catalogue_name+'_xmatches'+'.csv',index=False)
-    Astrogeo_catalogue_matches.to_csv('data/Astrogeo_'+catalogue_name+'.csv',index=False)
+        catalogue_Astrogeo_matches.index = Astrogeo_catalogue_matches.index
+        catalogue_Astrogeo_matches.to_csv('data/'+catalogue_name+'_xmatches'+'.csv',index=True, index_label='Index')
+    Astrogeo_catalogue_matches.to_csv('data/Astrogeo_'+catalogue_name+'.csv',index=True,index_label='Index')
     
     
 def load_sampled_catalogues():
